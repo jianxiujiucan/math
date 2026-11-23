@@ -1,0 +1,246 @@
+@use "./variables" as *;
+
+/* ===== 根单位：以 vw 定义，配合 rem 自适应缩放 =====
+ * 设计稿宽度 375px，1rem = 100px（375/3.75）；
+ * 视口 >= 520px 时页面按设计尺寸居中显示。
+ */
+html {
+  font-size: 26.6667vw; // 100 / 375 * 100vw
+  line-height: 1.5;
+}
+
+/* ===== 基础 ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --m-bg: rgba(255, 255, 255, 0.9);
+  --m-primary: #6a8dff;
+  --m-primary-light: #eef2ff;
+  --m-accent-from: #ff9f43;
+  --m-accent-to: #ff6b6b;
+
+  --m-text-main: #333;
+  --m-text-sub: #555;
+  --m-text-muted: #b4b6d0;
+
+  --m-danger: #e74c3c;
+  --m-success: #2ecc71;
+
+  --m-bg-gradient: linear-gradient(
+    160deg,
+    #acb8ff 0%,
+    #d2b4ff 50%,
+    #836cd5 100%
+  );
+  --m-card-shadow: 0 0.08rem 0.24rem rgba(0, 0, 0, 0.18);
+  --m-accent-shadow: 0 0.04rem 0.12rem rgba(255, 107, 107, 0.4);
+  --m-button-gd: linear-gradient(
+    135deg,
+    var(--m-accent-from),
+    var(--m-accent-to)
+  );
+
+  --m-bottom-tabs-space: 0.66rem;
+  --m-keypad-height: max(2.1rem, 210px);
+}
+
+body {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  background: var(--m-bg-gradient);
+  min-height: 100vh;
+  color: $text-main;
+}
+
+.page {
+  max-width: 3.75rem; // 设计稿全宽：小屏铺满，大屏居中
+  margin: 0 auto;
+  padding: 0.16rem 0.16rem var(--m-bottom-tabs-space); // 底部给固定 Tab 栏留位
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== 页面标题 / 底部提示（各视图共用） ===== */
+h1 {
+  text-align: center;
+  color: #fff;
+  font-size: 0.28rem;
+  margin: 0.1rem 0 0.18rem;
+  letter-spacing: 0.02rem;
+  text-shadow: 0 0.02rem 0.06rem rgba(0, 0, 0, 0.25);
+}
+
+.tip {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.13rem;
+  margin-top: 0.14rem;
+
+  .link {
+    color: #fff;
+  }
+}
+
+/* ===== 卡片 ===== */
+.card {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 0.16rem;
+  padding: 0.22rem 0.18rem;
+  box-shadow: var(--m-card-shadow);
+}
+
+/* ===== 主按钮（开始答题 / 下一题 / 返回首页 共用） ===== */
+.primary-btn {
+  width: 100%;
+  padding: 0.14rem;
+  font-size: 0.18rem;
+  font-weight: 700;
+  letter-spacing: 0.02rem;
+  color: #fff;
+  background: var(--m-button-gd);
+  border: none;
+  border-radius: 0.44rem;
+  cursor: pointer;
+  box-shadow: $accent-shadow;
+  transition: transform 0.1s ease;
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+/* ===== 次级按钮（确定 / 发送验证码等） ===== */
+.secondary-btn {
+  display: block;
+  margin: 0.14rem auto 0;
+  padding: 0.08rem 0.32rem;
+  font-size: 0.16rem;
+  font-weight: 600;
+  color: var(--m-primary);
+  background: var(--m-primary-light);
+  border: 0.02rem solid var(--m-primary);
+  border-radius: 9.99rem;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* ===== 文字链接按钮 ===== */
+.link {
+  color: var(--m-primary);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--m-primary);
+  font-size: inherit;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* ===== 表单 ===== */
+.form-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.1rem;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  font-size: 0.14rem;
+  font-weight: 600;
+  text-indent: 0.12rem;
+  color: var(--m-text-sub);
+  margin-bottom: 10px;
+}
+
+.text-input {
+  width: 100%;
+  padding: 0.1rem 0.12rem;
+  font-size: 0.16rem; // ≥16px 等效，防 iOS 聚焦自动放大
+  color: var(--m-text-main);
+  border: 0;
+
+  border-radius: 0.4rem;
+  outline: none;
+
+  background-color: rgba(133, 154, 222, 0.1);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:focus {
+    border-color: var(--m-primary);
+    box-shadow: 0 0 0 0.03rem rgba(106, 141, 255, 0.25);
+  }
+
+  &.input-error {
+    border-color: var(--m-danger);
+  }
+
+  &.input-ok {
+    border-color: var(--m-success);
+  }
+  &::placeholder {
+    color: var(--m-text-muted);
+  }
+}
+
+// 固定最小高度，防止错误提示出现/消失时布局跳动
+.field-msg {
+  display: flex;
+  align-items: center;
+  min-height: 0.2rem;
+  font-size: 0.13rem;
+  text-indent: 0.12rem;
+  margin-top: 0.04rem;
+  color: var(--m-danger);
+
+  &.ok {
+    color: var(--m-success);
+  }
+}
+
+// 服务端/全局错误横幅
+.form-error {
+  background: #fff2f0;
+  border: 0.01rem solid #ffccc7;
+  color: var(--m-danger);
+  font-size: 0.14rem;
+  border-radius: 0.08rem;
+  padding: 0.08rem 0.12rem;
+  margin-bottom: 0.12rem;
+}
+
+@media (min-width: 520px) {
+  html {
+    font-size: 16vw; // 520 / 3.75
+  }
+  .page {
+    max-width: 5rem;
+    margin: 0 auto;
+  }
+}
