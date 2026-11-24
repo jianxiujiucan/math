@@ -2,7 +2,7 @@ export type OpType = 'add' | 'sub' | 'addsub' | 'mul' | 'div' | 'muldiv'
 export type OpSymbol = '+' | '-' | '×' | '÷'
 export type RangeLimit = 10 | 20 | 100
 export type OperandCount = 2 | 3
-export type CountOption = 10 | 20 | 30 | 50 | 100
+export type CountOption = 10 | 20 | 50 | 100
 
 export interface QuizConfig {
   count: CountOption

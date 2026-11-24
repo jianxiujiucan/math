@@ -1,0 +1,10 @@
+<view class="page no-tabs">
+  <text class="page-title">找回密码</text>
+  <view class="card forgot-card">
+    <view class="key-icon">密</view>
+    <view class="desc">忘记密码了？请把你的<text class="strong">用户名</text>告诉管理员（家长），由管理员重置后告诉你新密码。</view>
+    <view class="desc sub">用户名由 2~20 位文字或数字组成，不含空格或特殊符号。</view>
+    <button class="primary-btn" bindtap="back">返回登录</button>
+    <view class="admin-row"><button class="link-btn" bindtap="openAdmin">管理员重置密码</button></view>
+  </view>
+</view>

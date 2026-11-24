@@ -1,0 +1,84 @@
+<view class="page {{user ? '' : 'no-tabs'}}">
+  <view class="entry-hero">
+    <view class="brand-copy">
+      <text class="brand-kicker">DAILY MATH</text>
+      <text class="brand-title">速算挑战</text>
+      <text class="brand-slogan">让每一次计算，都有新收获</text>
+    </view>
+    <view class="math-decor" aria-hidden="true">
+      <text class="math-badge number">7</text>
+      <text class="math-badge plus">+</text>
+      <text class="math-badge divide">÷</text>
+    </view>
+    <text class="hero-equation">3 + 5 = 8</text>
+  </view>
+
+  <view class="card auth-card">
+    <block wx:if="{{user}}">
+      <view class="hello">你好，{{user.username}}！</view>
+      <button class="primary-btn" hover-class="button-hover" bindtap="guestStart">开始答题</button>
+      <view class="center-row"><button class="link-btn" bindtap="logout">退出登录</button></view>
+    </block>
+
+    <block wx:else>
+      <view class="entry-heading">
+        <text class="entry-title">{{tab === 'login' ? '欢迎回来' : '创建账号'}}</text>
+        <text class="entry-subtitle">{{tab === 'login' ? '登录后继续你的练习之旅' : '保存成绩，和朋友一起挑战排行榜'}}</text>
+      </view>
+      <view class="auth-tabs">
+        <view class="auth-tab {{tab === 'login' ? 'active' : ''}}" data-tab="login" bindtap="switchTab">登 录</view>
+        <view class="auth-tab {{tab === 'register' ? 'active' : ''}}" data-tab="register" bindtap="switchTab">注 册</view>
+      </view>
+      <view wx:if="{{errorMsg}}" class="form-error">{{errorMsg}}</view>
+
+      <form wx:if="{{tab === 'login'}}" bindsubmit="submitLogin">
+        <view class="form-item">
+          <text class="form-label">用户名</text>
+          <input class="text-input" value="{{login.username}}" placeholder="请输入用户名" data-form="login" data-field="username" bindinput="onInput" />
+        </view>
+        <view class="form-item">
+          <text class="form-label">密码</text>
+          <input class="text-input" password value="{{login.password}}" placeholder="请输入密码" data-form="login" data-field="password" bindinput="onInput" />
+        </view>
+        <button class="primary-btn auth-submit" form-type="submit" loading="{{loading}}" disabled="{{loading}}">{{loading ? '登录中…' : '登 录'}}</button>
+      </form>
+
+      <form wx:else bindsubmit="submitRegister">
+        <view class="form-item">
+          <text class="form-label">用户名</text>
+          <input class="text-input {{registerErrors.username ? 'input-error' : ''}}" value="{{register.username}}" placeholder="2~20 位文字或数字" data-form="register" data-field="username" bindinput="onInput" bindblur="validateRegisterField" />
+          <text wx:if="{{registerErrors.username}}" class="field-error">{{registerErrors.username}}</text>
+        </view>
+        <view class="form-item">
+          <text class="form-label">邮箱</text>
+          <input class="text-input {{registerErrors.email ? 'input-error' : ''}}" value="{{register.email}}" placeholder="用于账号识别" data-form="register" data-field="email" bindinput="onInput" bindblur="validateRegisterField" />
+          <text wx:if="{{registerErrors.email}}" class="field-error">{{registerErrors.email}}</text>
+        </view>
+        <view class="form-item">
+          <text class="form-label">密码</text>
+          <input class="text-input {{registerErrors.password ? 'input-error' : ''}}" password value="{{register.password}}" placeholder="8 位以上，字母+数字组合" data-form="register" data-field="password" bindinput="onInput" bindblur="validateRegisterField" />
+          <text wx:if="{{registerErrors.password}}" class="field-error">{{registerErrors.password}}</text>
+        </view>
+        <view class="form-item">
+          <text class="form-label">确认密码</text>
+          <input class="text-input {{registerErrors.confirm ? 'input-error' : ''}}" password value="{{register.confirm}}" placeholder="请再次输入密码" data-form="register" data-field="confirm" bindinput="onInput" bindblur="validateRegisterField" />
+          <text wx:if="{{registerErrors.confirm}}" class="field-error">{{registerErrors.confirm}}</text>
+        </view>
+        <button class="primary-btn auth-submit" form-type="submit" loading="{{loading}}" disabled="{{loading}}">{{loading ? '注册中…' : '注册并登录'}}</button>
+      </form>
+
+      <view wx:if="{{tab === 'login'}}" class="bottom-links">
+        <button class="link-btn" data-tab="register" bindtap="switchTab">没有账号？去注册</button>
+        <button class="link-btn" bindtap="goForgot">忘记密码？</button>
+      </view>
+      <view wx:else class="bottom-links register-links">
+        <button class="link-btn" data-tab="login" bindtap="switchTab">已有账号？去登录</button>
+      </view>
+    </block>
+  </view>
+
+  <view wx:if="{{!user}}" class="guest-row">
+    <button class="link-btn guest-btn" bindtap="guestStart">访客模式，先试一试</button>
+  </view>
+  <view class="entry-footer">适合小学一、二年级 · 每天进步一点点</view>
+</view>

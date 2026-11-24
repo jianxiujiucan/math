@@ -196,7 +196,7 @@ async function submit() {
     </div>
 
     <button class="primary-btn" type="submit" :disabled="loading">
-      {{ loading ? "注册中…" : "注册并登录" }}
+      {{ loading ? "注册中…" : "注册并开始 →" }}
     </button>
   </form>
 

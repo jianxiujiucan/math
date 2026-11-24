@@ -1,0 +1,27 @@
+{
+  "description": "速算挑战微信小程序",
+  "appid": "touristappid",
+  "projectname": "math-miniprogram",
+  "compileType": "miniprogram",
+  "libVersion": "3.7.12",
+  "setting": {
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "urlCheck": true,
+    "coverView": true,
+    "ignoreUploadUnusedFiles": true
+  },
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "首页",
+          "pathName": "pages/entry/entry",
+          "query": ""
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,26 @@
+<view class="page">
+  <view class="setup-brand"><text>速算挑战</text><text class="brand-mark">=</text></view>
+  <view class="setup-hero">
+    <view class="setup-heading"><text class="setup-title">今天也要加油呀！</text><text class="setup-subtitle">选好规则，开始今天的计算小挑战</text></view>
+    <view class="setup-symbols" aria-hidden="true"><text class="number">5</text><text class="plus">+</text></view>
+  </view>
+  <view class="card setup-card">
+    <pill-group label="题目数量" options="{{countOptions}}" value="{{count}}" bind:change="onCountChange" />
+    <pill-group label="运算类型" options="{{opTypeOptions}}" value="{{opType}}" bind:change="onTypeChange" />
+    <pill-group label="计算结果范围" options="{{rangeOptions}}" value="{{range}}" bind:change="onRangeChange" />
+    <pill-group label="运算项个数" options="{{operandOptions}}" value="{{operands}}" bind:change="onOperandsChange" />
+
+    <view wx:if="{{isAddSub}}" class="carry-option">
+      <checkbox-group bindchange="onCarryChange">
+        <label class="checkbox-label">
+          <checkbox value="carry" checked="{{carry}}" color="#4698c9" />
+          <text>进位 / 退位练习（加大出题概率）</text>
+        </label>
+      </checkbox-group>
+    </view>
+
+    <button class="primary-btn" hover-class="button-hover" bindtap="start">开始挑战 →</button>
+  </view>
+
+  <view wx:if="{{!loggedIn}}" class="guest-back"><button class="link-btn" bindtap="goEntry">‹ 返回首页</button></view>
+</view>

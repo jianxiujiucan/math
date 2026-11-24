@@ -1,0 +1,12 @@
+<view wx:if="{{loggedIn}}" class="tab-bar">
+  <view
+    wx:for="{{tabs}}"
+    wx:key="path"
+    class="tab {{selected === index ? 'active' : ''}}"
+    data-path="{{item.path}}"
+    bindtap="onSwitch"
+  >
+    <view class="tab-mark">{{item.mark}}</view>
+    <text>{{item.label}}</text>
+  </view>
+</view>

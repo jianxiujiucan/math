@@ -81,21 +81,22 @@ const digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(4, 1fr);
-  gap: 0.06rem;
-  padding: 0.08rem 0.12rem;
-  background: #f7f7f9;
-  box-shadow: 0 -0.04rem 0.16rem rgba(0, 0, 0, 0.12);
+  gap: 0.1rem;
+  padding: 0.08rem 0.2rem 0.14rem;
+  background: transparent;
+  box-shadow: none;
 }
 
 .key {
   min-width: 0;
-  border: 0.01rem solid #e3e6ef;
-  border-radius: 0.1rem;
-  background: #fff;
+  border: none;
+  border-radius: 0.12rem;
+  background: var(--m-cream);
   color: $text-main;
   font-family: inherit;
   font-size: 0.22rem;
   font-weight: 700;
+  box-shadow: 0 0.04rem 0.08rem rgba(51, 71, 91, 0.07);
   cursor: pointer;
   user-select: none;
   touch-action: manipulation;
@@ -118,13 +119,12 @@ const digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 }
 
 .key-action {
-  background: $primary-light;
-  color: $primary;
-  font-size: 0.16rem;
+  background: var(--m-pink);
+  color: #8c6575;
+  font-size: 0.14rem;
 }
 
 .key-confirm {
-  border-color: $primary;
   background: $primary;
   color: #fff;
   font-size: 0.17rem;
@@ -132,7 +132,7 @@ const digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 @media (min-width: 520px) {
   .numeric-keypad {
-    max-width: 5rem;
+    max-width: 4.3rem;
   }
 }
 </style>

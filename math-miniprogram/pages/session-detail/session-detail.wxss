@@ -1,0 +1,84 @@
+.summary-card {
+  text-align: center;
+}
+
+.summary-score {
+  color: #ff6b6b;
+  font-size: 60rpx;
+  font-weight: 800;
+}
+
+.summary-meta {
+  margin-top: 8rpx;
+  color: #555555;
+  font-size: 25rpx;
+  line-height: 1.5;
+}
+
+.summary-meta.time {
+  color: #999999;
+  font-size: 22rpx;
+}
+
+.q-row {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f0f0f4;
+}
+
+.q-row:last-child {
+  border-bottom: 0;
+}
+
+.q-seq {
+  flex-shrink: 0;
+  color: #999999;
+  font-size: 22rpx;
+}
+
+.q-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  gap: 4rpx;
+}
+
+.q-expr {
+  color: #333333;
+  font-size: 25rpx;
+  font-weight: 600;
+}
+
+.q-answer {
+  color: #e74c3c;
+  font-size: 21rpx;
+}
+
+.q-mark {
+  flex-shrink: 0;
+  color: #27ae60;
+  font-size: 30rpx;
+  font-weight: 800;
+}
+
+.wrong .q-mark {
+  color: #e74c3c;
+}
+
+.q-time {
+  flex-shrink: 0;
+  color: #999999;
+  font-size: 21rpx;
+  font-variant-numeric: tabular-nums;
+}
+
+.back-row {
+  text-align: center;
+}
+
+.back-row .link-btn {
+  color: #ffffff;
+}

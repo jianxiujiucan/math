@@ -1,0 +1,38 @@
+.forgot-card {
+  text-align: center;
+}
+
+.key-icon {
+  width: 72rpx;
+  height: 72rpx;
+  margin: 0 auto 24rpx;
+  border-radius: 50%;
+  background: #eef2ff;
+  color: #597ef7;
+  font-size: 30rpx;
+  font-weight: 700;
+  line-height: 72rpx;
+}
+
+.desc {
+  margin-bottom: 20rpx;
+  color: #333333;
+  font-size: 27rpx;
+  line-height: 1.75;
+  text-align: left;
+}
+
+.desc.sub {
+  margin-bottom: 30rpx;
+  color: #999999;
+  font-size: 23rpx;
+}
+
+.strong {
+  color: #333333;
+  font-weight: 700;
+}
+
+.admin-row {
+  margin-top: 24rpx;
+}

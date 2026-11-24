@@ -7,7 +7,7 @@ interface QuizState {
   questions: Question[]
   /** 当前题索引（0 起） */
   current: number
-  /** 已答对数 */
+  /** 首次作答即答对的题数；答错后重试正确不再累加 */
   correct: number
   /**
    * 每开始一场递增。QuizView 据此识别「新的一场」并重置组件局部状态

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "正在答题",
+  "usingComponents": {
+    "numeric-keypad": "/components/numeric-keypad/index",
+    "sound-toggle": "/components/sound-toggle/index"
+  }
+}

@@ -1,0 +1,29 @@
+<view class="page no-tabs">
+  <text class="page-title">答题详情</text>
+  <view wx:if="{{errorMsg}}" class="form-error">{{errorMsg}}</view>
+  <text wx:if="{{loading}}" class="loading-text">加载中…</text>
+
+  <block wx:elif="{{detail}}">
+    <view class="card summary-card">
+      <view class="summary-score">{{detail.session.score}} 分</view>
+      <view class="summary-meta">{{detail.configText}}</view>
+      <view class="summary-meta">对 {{detail.session.correct}}/{{detail.session.total}} 题 · 用时 {{detail.durationText}}</view>
+      <view class="summary-meta time">{{detail.createdAtText}}</view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">每题作答</view>
+      <view wx:for="{{detail.questions}}" wx:key="seq" class="q-row {{item.isCorrect ? '' : 'wrong'}}">
+        <text class="q-seq">({{item.seq}})</text>
+        <view class="q-main">
+          <text class="q-expr">{{item.expr}} = {{item.userAnswer || '?'}}</text>
+          <text wx:if="{{!item.isCorrect}}" class="q-answer">答案：{{item.correctAnswer}}</text>
+        </view>
+        <text class="q-mark">{{item.isCorrect ? '✓' : '✗'}}</text>
+        <text class="q-time">{{item.timeText}}</text>
+      </view>
+    </view>
+  </block>
+
+  <view class="back-row"><button class="link-btn" bindtap="back">‹ 返回个人中心</button></view>
+</view>

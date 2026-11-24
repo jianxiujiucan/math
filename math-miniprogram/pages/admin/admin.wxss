@@ -1,0 +1,12 @@
+.desc {
+  margin-bottom: 26rpx;
+  color: #555555;
+  font-size: 25rpx;
+  line-height: 1.6;
+}
+
+.tip {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 23rpx;
+  text-align: center;
+}

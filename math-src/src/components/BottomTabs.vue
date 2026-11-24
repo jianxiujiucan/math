@@ -105,6 +105,9 @@ const active = computed(() => {
   max-width: 3.75rem; // 与 .page 同宽
   display: flex;
   z-index: 20;
+  background: var(--m-cream);
+  border-top: 0.01rem solid rgba(63, 115, 146, 0.08);
+  box-shadow: 0 -0.04rem 0.16rem rgba(51, 71, 91, 0.06);
 }
 
 .tab {
@@ -113,8 +116,8 @@ const active = computed(() => {
   flex-direction: column;
   align-items: center;
   gap: 0.02rem;
-  padding: 0.07rem 0 0.06rem;
-  background-color: rgba(255, 255, 255, 0.95);
+  padding: 0.1rem 0 0.08rem;
+  background-color: transparent;
   color: var(--m-text-muted);
   text-decoration: none;
 
@@ -137,7 +140,7 @@ const active = computed(() => {
 
 @media (min-width: 520px) {
   .bottom-tabs {
-    max-width: 100%; // 与 .page 桌面宽度一致
+    max-width: 4.3rem; // 与 .page 桌面宽度一致
   }
 }
 </style>

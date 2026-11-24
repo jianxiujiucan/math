@@ -1,0 +1,45 @@
+{
+  "pages": [
+    "pages/entry/entry",
+    "pages/setup/setup",
+    "pages/quiz/quiz",
+    "pages/leaderboard/leaderboard",
+    "pages/profile/profile",
+    "pages/session-detail/session-detail",
+    "pages/forgot/forgot",
+    "pages/admin/admin"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#b9ddf2",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "速算挑战",
+    "backgroundColor": "#b9ddf2",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#777888",
+    "selectedColor": "#6a8dff",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/entry/entry",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/setup/setup",
+        "text": "练习"
+      },
+      {
+        "pagePath": "pages/leaderboard/leaderboard",
+        "text": "排行榜"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

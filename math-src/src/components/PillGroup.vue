@@ -39,29 +39,29 @@ const emit = defineEmits<{
 @use '../styles/variables' as *;
 
 .option-group {
-  margin-bottom: 0.18rem;
+  margin-bottom: 0.13rem;
 }
 
 .option-label {
-  font-size: 0.15rem;
-  font-weight: 600;
-  color: $text-sub;
-  margin-bottom: 0.1rem;
+  font-size: 0.12rem;
+  font-weight: 700;
+  color: $text-main;
+  margin-bottom: 0.08rem;
 }
 
 .pill-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.08rem;
+  gap: 0.07rem;
 }
 
 .pill {
-  border: 0.02rem solid #dcdcdc;
-  background: #f7f7f9;
-  color: $text-sub;
-  border-radius: 9.99rem;
-  padding: 0.08rem 0.16rem;
-  font-size: 0.15rem;
+  border: 0.01rem solid #d8e7ef;
+  background: #fff;
+  color: var(--m-text-sub);
+  border-radius: 0.1rem;
+  padding: 0.08rem 0.14rem;
+  font-size: 0.12rem;
   cursor: pointer;
   transition: all 0.15s ease;
   user-select: none;

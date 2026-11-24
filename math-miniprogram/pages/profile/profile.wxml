@@ -1,0 +1,50 @@
+<view class="page">
+  <text class="page-title">个人中心</text>
+  <view wx:if="{{errorMsg}}" class="form-error">{{errorMsg}}</view>
+  <text wx:if="{{loading && !profile}}" class="loading-text">加载中…</text>
+
+  <block wx:elif="{{profile}}">
+    <view class="card user-card">
+      <button class="link-btn logout-btn" bindtap="logout">退出登录</button>
+      <view class="username">{{profile.user.username}}</view>
+      <view class="user-meta">{{profile.user.email}}</view>
+      <view class="user-meta">注册于 {{profile.createdAtText}}</view>
+    </view>
+
+    <view class="card">
+      <view class="stat-grid">
+        <view class="stat-cell"><text class="stat-num">{{profile.stats.totalSessions}}</text><text class="stat-label">总场次</text></view>
+        <view class="stat-cell"><text class="stat-num">{{profile.stats.totalQuestions}}</text><text class="stat-label">总题数</text></view>
+        <view class="stat-cell"><text class="stat-num">{{profile.stats.accuracy}}%</text><text class="stat-label">正确率</text></view>
+      </view>
+      <view class="type-table">
+        <view class="type-row type-head"><text>类型</text><text>场次</text><text>最佳每题用时</text><text>最高分</text></view>
+        <view wx:for="{{perTypeRows}}" wx:key="opType" class="type-row">
+          <text>{{item.label}}</text><text>{{item.sessions}}</text><text>{{item.bestAvgText}}</text><text>{{item.bestScore}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">答题记录</view>
+      <view wx:if="{{sessions.length === 0 && !loading}}" class="empty">
+        <text class="state-text">还没有答题记录</text>
+        <button class="primary-btn" bindtap="goSetup">去答一组</button>
+      </view>
+      <block wx:else>
+        <view wx:for="{{sessions}}" wx:key="id" class="record-row" hover-class="record-hover" data-id="{{item.id}}" bindtap="openSession">
+          <view class="record-main">
+            <text class="record-config">{{item.configText}}</text>
+            <text class="record-time">{{item.createdAtText}}</text>
+          </view>
+          <view class="record-result"><text class="record-score">{{item.score}}分</text><text class="record-detail">›</text></view>
+        </view>
+        <view wx:if="{{totalPages > 1}}" class="pager">
+          <button class="link-btn" disabled="{{page <= 1}}" data-page="{{page - 1}}" bindtap="goPage">‹ 上一页</button>
+          <text>{{page}}/{{totalPages}}</text>
+          <button class="link-btn" disabled="{{page >= totalPages}}" data-page="{{page + 1}}" bindtap="goPage">下一页 ›</button>
+        </view>
+      </block>
+    </view>
+  </block>
+</view>

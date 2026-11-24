@@ -1,0 +1,25 @@
+.sound-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72rpx;
+  height: 72rpx;
+  margin: 0 0 0 auto;
+  padding: 0;
+  border-radius: 50%;
+  background: #4698c9;
+  line-height: 1;
+}
+
+.sound-toggle::after {
+  border: 0;
+}
+
+.sound-icon {
+  width: 42rpx;
+  height: 42rpx;
+}
+
+.sound-hover {
+  transform: scale(0.9);
+}

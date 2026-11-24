@@ -1,0 +1,15 @@
+<view class="option-group">
+  <view wx:if="{{label}}" class="option-label">{{label}}</view>
+  <view class="pill-group count-{{options.length}}">
+    <button
+      wx:for="{{options}}"
+      wx:key="value"
+      class="pill {{item.value === value ? 'active' : ''}}"
+      disabled="{{item.disabled}}"
+      data-value="{{item.value}}"
+      data-disabled="{{item.disabled}}"
+      hover-class="pill-hover"
+      bindtap="onSelect"
+    >{{item.label}}</button>
+  </view>
+</view>

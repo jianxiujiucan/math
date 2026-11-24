@@ -1,21 +1,21 @@
 // 设计 token：只放变量，不输出 CSS
 
-$primary: #6a8dff;
-$primary-light: #eef2ff;
-$accent-from: #ff9f43;
-$accent-to: #ff6b6b;
+$primary: #4698c9;
+$primary-light: #e8f5fb;
+$accent-from: #e8c8d4;
+$accent-to: #a5677e;
 
-$text-main: #333;
-$text-sub: #555;
-$text-muted: #999;
+$text-main: #33475b;
+$text-sub: #527087;
+$text-muted: #8c9aa7;
 
 $danger: #e74c3c;
-$success: #2ecc71;
+$success: #5ba68a;
 
-$bg-gradient: linear-gradient(160deg, #6a8dff 0%, #a06cd5 100%);
-$card-shadow: 0 0.08rem 0.24rem rgba(0, 0, 0, 0.18);
-$accent-shadow: 0 0.04rem 0.12rem rgba(255, 107, 107, 0.4);
+$bg-gradient: #b9ddf2;
+$card-shadow: 0 0.12rem 0.28rem rgba(51, 71, 91, 0.13);
+$accent-shadow: 0 0.07rem 0.14rem rgba(63, 115, 146, 0.24);
 
 body {
-  --m-bg: rgba(255, 255, 255, 0.95);
+  --m-bg: #fffdf2;
 }

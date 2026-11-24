@@ -1,6 +1,6 @@
 # math-server
 
-口算答题器后端（Hono + Postgres）：注册登录、答题成绩存档、个人中心、排行榜。
+速算挑战后端（Hono + Postgres）：注册登录、答题成绩存档、个人中心、排行榜。
 
 - 线上：**Cloudflare Workers**（入口 `src/worker.ts`，数据库经 Hyperdrive 连接 Supabase）
 - 数据库：**Supabase** Postgres（表自动创建，幂等）

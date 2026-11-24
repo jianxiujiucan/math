@@ -15,6 +15,9 @@ const { soundOn, toggle } = useSound()
 
 <style scoped lang="scss">
 .sound-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: fixed;
   bottom: 0.62rem; // 位于底部 Tab 栏上方
   right: 0.12rem;
@@ -23,8 +26,7 @@ const { soundOn, toggle } = useSound()
   height: 0.4rem;
   border: none;
   border-radius: 50%;
-  background: url('../assets/media/sound.png') center no-repeat rgba(255, 255, 255, 0.22);
-  background-size: 60%;
+  background: var(--m-cream);
   cursor: pointer;
   user-select: none;
   transition: transform 0.1s ease;
@@ -33,8 +35,18 @@ const { soundOn, toggle } = useSound()
     transform: scale(0.9);
   }
 
-  &.off {
-    background-image: url('../assets/media/mute.png');
+  &::before {
+    content: '';
+    width: 60%;
+    height: 60%;
+    background: var(--m-primary);
+    -webkit-mask: url('../assets/media/sound.png') center / contain no-repeat;
+    mask: url('../assets/media/sound.png') center / contain no-repeat;
+  }
+
+  &.off::before {
+    -webkit-mask-image: url('../assets/media/mute.png');
+    mask-image: url('../assets/media/mute.png');
   }
 }
 </style>

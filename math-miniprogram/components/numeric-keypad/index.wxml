@@ -1,0 +1,14 @@
+<view class="keypad" aria-label="数字小键盘">
+  <button
+    wx:for="{{digits}}"
+    wx:key="*this"
+    class="key"
+    disabled="{{disabled}}"
+    data-digit="{{item}}"
+    hover-class="key-hover"
+    bindtap="onDigit"
+  >{{item}}</button>
+  <button class="key key-action" disabled="{{disabled}}" hover-class="key-hover" bindtap="onBackspace">删除</button>
+  <button class="key" disabled="{{disabled}}" data-digit="0" hover-class="key-hover" bindtap="onDigit">0</button>
+  <button class="key key-confirm" disabled="{{disabled || confirmDisabled}}" hover-class="key-hover" bindtap="onConfirm">确定</button>
+</view>

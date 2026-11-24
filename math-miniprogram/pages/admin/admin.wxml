@@ -1,0 +1,24 @@
+<view class="page no-tabs">
+  <text class="page-title">管理后台</text>
+  <view class="card">
+    <view class="desc">为用户重置密码（用户忘记密码时使用）。</view>
+    <form bindsubmit="submit">
+      <view wx:if="{{errorMsg}}" class="form-error">{{errorMsg}}</view>
+      <view wx:if="{{successMsg}}" class="form-success">{{successMsg}}</view>
+      <view class="form-item">
+        <text class="form-label">管理口令</text>
+        <input class="text-input" password value="{{adminToken}}" placeholder="管理员专用口令" data-field="adminToken" bindinput="onInput" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">要重置的用户名</text>
+        <input class="text-input" value="{{username}}" placeholder="2~20 位文字或数字" data-field="username" bindinput="onInput" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">新密码</text>
+        <input class="text-input" password value="{{newPassword}}" placeholder="8 位以上，字母+数字组合" data-field="newPassword" bindinput="onInput" />
+      </view>
+      <button class="primary-btn" form-type="submit" loading="{{loading}}" disabled="{{loading}}">{{loading ? '提交中…' : '重置密码'}}</button>
+    </form>
+  </view>
+  <view class="tip">此页面仅管理员使用</view>
+</view>

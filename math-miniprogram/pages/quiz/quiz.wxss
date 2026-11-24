@@ -1,0 +1,280 @@
+.quiz-page {
+  padding-bottom: calc(480rpx + env(safe-area-inset-bottom));
+}
+
+.quiz-page.is-finished {
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+}
+
+.quiz-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 4rpx 26rpx;
+}
+
+.badge {
+  min-width: 170rpx;
+  padding: 16rpx 28rpx;
+  border-radius: 40rpx;
+  background: #fffdf2;
+  color: #4698c9;
+  font-size: 27rpx;
+  font-weight: 700;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.badge:last-child {
+  background: #f7e7ed;
+  color: #8c6575;
+}
+
+.question-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 520rpx;
+  padding: 36rpx 34rpx 46rpx;
+  overflow: hidden;
+}
+
+.question-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding-top: 50rpx;
+  color: #33475b;
+  font-size: 64rpx;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.number {
+  margin-right: 10rpx;
+  color: #999999;
+  font-size: 30rpx;
+}
+
+.question-meta {
+  position: absolute;
+  top: 32rpx;
+  right: 34rpx;
+  left: 34rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #8c9aa7;
+  font-size: 21rpx;
+}
+
+.question-type {
+  padding: 12rpx 20rpx;
+  border-radius: 28rpx;
+  background: #f7e7ed;
+  color: #8c6575;
+}
+
+.english-label {
+  position: absolute;
+  top: 132rpx;
+  left: 0;
+  width: 100%;
+  color: #9aa8b5;
+  font-family: Arial, sans-serif;
+  font-size: 18rpx;
+  font-weight: 600;
+  letter-spacing: 3rpx;
+  text-align: center;
+}
+
+.decor-plus {
+  position: absolute;
+  top: 96rpx;
+  right: 56rpx;
+  color: #f2dce4;
+  font-family: Arial, sans-serif;
+  font-size: 128rpx;
+  font-weight: 700;
+}
+
+.decor-number {
+  position: absolute;
+  bottom: 34rpx;
+  left: 42rpx;
+  color: #e8f1f5;
+  font-family: Arial, sans-serif;
+  font-size: 100rpx;
+  font-weight: 700;
+}
+
+.answer-input {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 108rpx;
+  height: 116rpx;
+  margin-left: 20rpx;
+  border: 4rpx solid #8ebed8;
+  border-radius: 24rpx;
+  background: #ffffff;
+  color: #33475b;
+  font-size: 54rpx;
+}
+
+.answer-input.answered {
+  border-color: #cccccc;
+  background: #f2f2f2;
+  color: #777777;
+}
+
+.result-icon {
+  width: 54rpx;
+  font-size: 42rpx;
+  font-weight: 800;
+  text-align: center;
+}
+
+.result-icon.right {
+  color: #27ae60;
+}
+
+.result-icon.wrong {
+  color: #e74c3c;
+}
+
+.feedback {
+  position: absolute;
+  right: 12rpx;
+  bottom: 38rpx;
+  left: 12rpx;
+  color: #e74c3c;
+  font-size: 24rpx;
+  font-weight: 600;
+  text-align: center;
+}
+
+.correct-feedback {
+  position: absolute;
+  right: 20rpx;
+  bottom: 38rpx;
+  left: 20rpx;
+  color: #5ba68a;
+  font-size: 24rpx;
+  font-weight: 700;
+  text-align: center;
+}
+
+.question-hint {
+  position: absolute;
+  right: 20rpx;
+  bottom: 42rpx;
+  left: 20rpx;
+  color: #8c9aa7;
+  font-size: 23rpx;
+  text-align: center;
+}
+
+.quiz-progress-track {
+  height: 12rpx;
+  margin: 28rpx 4rpx 0;
+  overflow: hidden;
+  border-radius: 8rpx;
+  background: #d8edf8;
+}
+
+.quiz-progress-track view {
+  height: 100%;
+  border-radius: inherit;
+  background: #4698c9;
+}
+
+.keypad-label {
+  margin: 26rpx 8rpx 0;
+  color: #33475b;
+  font-size: 23rpx;
+  font-weight: 600;
+}
+
+.quiz-topbar {
+  display: grid;
+  grid-template-columns: 72rpx 1fr 72rpx;
+  align-items: center;
+  padding-top: 16rpx;
+}
+
+.quiz-title {
+  color: #33475b;
+  font-size: 32rpx;
+  font-weight: 700;
+  text-align: center;
+}
+
+.back-btn {
+  width: 72rpx;
+  height: 72rpx;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: #33475b;
+  font-family: Arial, sans-serif;
+  font-size: 56rpx;
+  line-height: 64rpx;
+}
+
+.next-btn {
+  margin-top: 4rpx;
+}
+
+.result-area {
+  text-align: center;
+}
+
+.result-title {
+  color: #888888;
+  font-size: 27rpx;
+  font-weight: 600;
+}
+
+.score-text {
+  margin: 8rpx 0 4rpx;
+  color: #a5677e;
+  font-size: 72rpx;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.cheer-text {
+  margin-bottom: 12rpx;
+  color: #4698c9;
+  font-size: 29rpx;
+  font-weight: 600;
+}
+
+.summary-text {
+  margin-bottom: 16rpx;
+  color: #333333;
+  font-size: 27rpx;
+}
+
+.save-tip {
+  min-height: 44rpx;
+  margin-bottom: 22rpx;
+  color: #999999;
+  font-size: 24rpx;
+  line-height: 1.7;
+}
+
+.save-tip .link-btn {
+  font-size: 24rpx;
+}
+
+.saved-text {
+  color: #27ae60;
+}
+
+.sound-row {
+  margin-top: 12rpx;
+}

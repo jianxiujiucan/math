@@ -1,0 +1,22 @@
+<view class="page">
+  <text class="page-title">排行榜</text>
+  <view class="card">
+    <pill-group label="运算类型" options="{{opTypeOptions}}" value="{{opType}}" bind:change="onTypeChange" />
+    <view class="rule">按平均每题用时排名，仅正确率 ≥90% 的场次上榜</view>
+
+    <view wx:if="{{errorMsg}}" class="form-error">{{errorMsg}}</view>
+    <text wx:elif="{{loading}}" class="state-text">加载中…</text>
+    <text wx:elif="{{list.length === 0}}" class="state-text">暂无记录，快来上榜！</text>
+
+    <view wx:else class="rank-list">
+      <view wx:for="{{list}}" wx:key="username" class="rank-row">
+        <text class="rank-badge r{{item.rank}}">{{item.rank}}</text>
+        <view class="rank-main">
+          <text class="rank-name">{{item.username}}</text>
+          <text class="rank-meta">{{item.total}}题 · {{item.dateText}}</text>
+        </view>
+        <text class="rank-time">{{item.avgText}}</text>
+      </view>
+    </view>
+  </view>
+</view>

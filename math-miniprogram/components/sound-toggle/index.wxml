@@ -1,0 +1,8 @@
+<button
+  class="sound-toggle"
+  aria-label="{{soundOn ? '关闭音效' : '打开音效'}}"
+  hover-class="sound-hover"
+  bindtap="onToggle"
+>
+  <image class="sound-icon" src="/assets/media/{{soundOn ? 'sound' : 'mute'}}.png" mode="aspectFit" />
+</button>

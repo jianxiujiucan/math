@@ -1,0 +1,194 @@
+.entry-hero {
+  position: relative;
+  min-height: 330rpx;
+  padding: 58rpx 8rpx 30rpx;
+}
+
+.brand-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-kicker,
+.eyebrow {
+  color: #4698c9;
+  font-family: Arial, sans-serif;
+  font-size: 20rpx;
+  font-weight: 700;
+  letter-spacing: 4rpx;
+}
+
+.brand-title {
+  margin-top: 10rpx;
+  color: #33475b;
+  font-size: 62rpx;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.brand-slogan {
+  margin-top: 14rpx;
+  color: #527087;
+  font-size: 25rpx;
+}
+
+.math-decor {
+  position: absolute;
+  top: 44rpx;
+  right: 4rpx;
+  width: 210rpx;
+  height: 210rpx;
+}
+
+.math-badge {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-family: Arial, sans-serif;
+  font-weight: 700;
+}
+
+.math-badge.number {
+  top: 0;
+  right: 0;
+  width: 104rpx;
+  height: 104rpx;
+  background: #fffdf2;
+  color: #4698c9;
+  font-size: 44rpx;
+  transform: rotate(8deg);
+}
+
+.math-badge.plus,
+.math-badge.divide {
+  bottom: 0;
+  width: 76rpx;
+  height: 76rpx;
+  font-size: 32rpx;
+}
+
+.math-badge.plus {
+  left: 0;
+  background: #f7e7ed;
+  color: #a5677e;
+}
+
+.math-badge.divide {
+  right: 0;
+  background: #ffffff;
+  color: #4698c9;
+}
+
+.hero-equation {
+  display: inline-flex;
+  margin-top: 30rpx;
+  padding: 14rpx 28rpx;
+  border-radius: 36rpx;
+  background: #fffdf2;
+  color: #4698c9;
+  font-family: Arial, sans-serif;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.auth-card {
+  margin-top: 0;
+}
+
+.entry-heading {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 28rpx;
+}
+
+.entry-title {
+  margin-top: 6rpx;
+  color: #33475b;
+  font-size: 42rpx;
+  font-weight: 700;
+}
+
+.entry-subtitle {
+  margin-top: 6rpx;
+  color: #8c9aa7;
+  font-size: 23rpx;
+  line-height: 1.6;
+}
+
+.hello {
+  margin-bottom: 28rpx;
+  color: #333333;
+  font-size: 30rpx;
+  font-weight: 600;
+  text-align: center;
+}
+
+.auth-tabs {
+  display: flex;
+  gap: 8rpx;
+  margin-bottom: 30rpx;
+  padding: 8rpx;
+  border-radius: 24rpx;
+  background: #e8f5fb;
+}
+
+.auth-tab {
+  position: relative;
+  flex: 1;
+  padding: 16rpx 0;
+  border-radius: 18rpx;
+  color: #8c9aa7;
+  font-size: 29rpx;
+  text-align: center;
+}
+
+.auth-tab.active {
+  background: #ffffff;
+  color: #4698c9;
+  font-weight: 700;
+}
+
+.auth-tab.active::after {
+  display: none;
+}
+
+.auth-submit {
+  margin-top: 20rpx;
+}
+
+.bottom-links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 28rpx;
+}
+
+.register-links {
+  justify-content: center;
+}
+
+.field-error {
+  display: block;
+  margin: 8rpx 18rpx 0;
+  color: #e74c3c;
+  font-size: 23rpx;
+  line-height: 1.45;
+}
+
+.center-row,
+.guest-row {
+  margin-top: 24rpx;
+  text-align: center;
+}
+
+.guest-btn {
+  color: #527087;
+}
+
+.entry-footer {
+  padding-top: 44rpx;
+  color: #527087;
+  font-size: 21rpx;
+  text-align: center;
+}

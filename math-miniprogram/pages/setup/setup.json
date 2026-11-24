@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "答题设置",
+  "usingComponents": {
+    "pill-group": "/components/pill-group/index"
+  }
+}

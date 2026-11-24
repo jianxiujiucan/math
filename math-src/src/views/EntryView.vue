@@ -9,14 +9,12 @@ const route = useRoute();
 const router = useRouter();
 const auth = useAuthStore();
 
-// 登录/注册 tab，默认登录；?tab=register 可直达注册表单
 const tab = ref<"login" | "register">(
   route.query.tab === "register" ? "register" : "login"
 );
 
 function switchTab(t: "login" | "register") {
   tab.value = t;
-  // 同步到 URL query（保留 redirect 等参数），刷新后保持当前 tab
   router.replace({
     query: { ...route.query, tab: t === "login" ? undefined : "register" },
   });
@@ -24,121 +22,282 @@ function switchTab(t: "login" | "register") {
 </script>
 
 <template>
-  <h1>口算答题器</h1>
+  <header class="entry-hero">
+    <div class="brand-copy">
+      <p class="brand-kicker">DAILY MATH</p>
+      <h1>速算挑战</h1>
+      <p class="brand-slogan">让每一次计算，都有新收获</p>
+    </div>
+    <div class="math-decor" aria-hidden="true">
+      <span class="math-badge number">7</span>
+      <span class="math-badge plus">+</span>
+      <span class="math-badge divide">÷</span>
+    </div>
+    <span class="hero-equation">3 + 5 = 8</span>
+  </header>
+
   <div class="login">
     <template v-if="auth.state.user">
-      <p class="hello">你好，{{ auth.state.user.username }}！</p>
+      <div class="entry-heading">
+        <p>{{ auth.state.user.username }}，准备好开始新一组练习了吗？</p>
+      </div>
       <button class="primary-btn" @click="router.push('/setup')">
-        开始答题
+        开始答题 →
       </button>
       <p class="bottom-row">
         <button class="link-btn" @click="auth.logout()">退出登录</button>
       </p>
     </template>
     <template v-else>
+      <div class="entry-heading">
+        <h2>{{ tab === "login" ? "欢迎回来" : "创建账号" }}</h2>
+        <p>
+          {{
+            tab === "login"
+              ? "登录后继续你的练习之旅"
+              : "保存成绩，和朋友一起挑战排行榜"
+          }}
+        </p>
+      </div>
       <div class="auth-tabs">
-        <span
+        <button
+          type="button"
           class="auth-tab"
           :class="{ active: tab === 'login' }"
           @click="switchTab('login')"
         >
-          登 录
-        </span>
-        <span
+          登录
+        </button>
+        <button
+          type="button"
           class="auth-tab"
           :class="{ active: tab === 'register' }"
           @click="switchTab('register')"
         >
-          注 册
-        </span>
+          注册
+        </button>
       </div>
       <LoginForm v-if="tab === 'login'" @switch="switchTab('register')" />
       <RegisterForm v-else @switch="switchTab('login')" />
     </template>
   </div>
+
   <div v-if="!auth.state.user" class="guest-row">
-    <span class="link-btn guest-btn" @click="router.push('/setup')">
-      访客模式，随便玩玩 ›
-    </span>
+    <button class="link-btn guest-btn" @click="router.push('/setup')">
+      访客模式，先试一试
+    </button>
   </div>
-  <!-- <p class="tip">适合小学一、二年级口算练习</p> -->
+  <p class="entry-footer">适合小学一、二年级 · 每天进步一点点</p>
 </template>
 
 <style scoped lang="scss">
 @use "../styles/variables" as *;
 
+.entry-hero {
+  position: relative;
+  min-height: 1.86rem;
+  padding: 0.34rem 0.04rem 0.2rem;
+}
+
+.brand-kicker,
+.eyebrow {
+  color: $primary;
+  font-family: Inter, Arial, sans-serif;
+  font-size: 0.1rem;
+  font-weight: 700;
+  letter-spacing: 0.12rem;
+}
+
+.brand-kicker {
+  margin-bottom: 0.06rem;
+}
+
+.brand-copy h1 {
+  margin: 0;
+  color: $text-main;
+  font-size: 0.34rem;
+  line-height: 1.3;
+  text-align: left;
+}
+
+.brand-slogan {
+  margin-top: 0.08rem;
+  color: $text-sub;
+  font-size: 0.13rem;
+}
+
+.math-decor {
+  position: absolute;
+  top: 0.26rem;
+  right: 0.02rem;
+  width: 1.16rem;
+  height: 1.16rem;
+}
+
+.math-badge {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-family: Inter, Arial, sans-serif;
+  font-weight: 700;
+  box-shadow: 0 0.06rem 0.14rem rgba(51, 71, 91, 0.06);
+
+  &.number {
+    top: 0;
+    right: 0;
+    width: 0.58rem;
+    height: 0.58rem;
+    background: var(--m-cream);
+    color: $primary;
+    font-size: 0.25rem;
+    transform: rotate(8deg);
+  }
+
+  &.plus,
+  &.divide {
+    bottom: 0.08rem;
+    width: 0.42rem;
+    height: 0.42rem;
+    font-size: 0.18rem;
+  }
+
+  &.plus {
+    left: 0;
+    background: #f7e7ed;
+    color: #a5677e;
+    transform: rotate(-8deg);
+  }
+
+  &.divide {
+    right: 0;
+    background: #fff;
+    color: $primary;
+    transform: rotate(7deg);
+  }
+}
+
+.hero-equation {
+  display: flex;
+  width: max-content;
+  margin-top: 0.18rem;
+  padding: 0.09rem 0.16rem;
+  border-radius: 0.2rem;
+  background: var(--m-cream);
+  color: $primary;
+  font-family: Inter, Arial, sans-serif;
+  font-size: 0.15rem;
+  font-weight: 700;
+}
+
 .login {
   display: flex;
   flex-direction: column;
-  background: var(--m-bg);
-  border-radius: 0.16rem;
-  padding: 0.22rem 0.18rem;
+  padding: 0.24rem;
+  border-radius: 0.08rem;
+  background: var(--m-cream);
   box-shadow: var(--m-card-shadow);
 }
 
+.entry-heading {
+  margin-bottom: 0.16rem;
+
+  .eyebrow {
+    margin-bottom: 0.04rem;
+    font-size: 0.09rem;
+  }
+
+  h2 {
+    color: $text-main;
+    font-size: 0.24rem;
+    line-height: 1.4;
+  }
+
+  p:last-child {
+    margin-top: 0.03rem;
+    color: $text-muted;
+    font-size: 0.12rem;
+    line-height: 1.6;
+  }
+}
+
 .hello {
-  text-align: center;
+  margin-bottom: 0.16rem;
+  color: $text-main;
   font-size: 0.17rem;
   font-weight: 600;
-  color: var(--m-text-main);
-  margin-bottom: 0.16rem;
+  text-align: center;
 }
 
 .auth-tabs {
   display: flex;
-
-  margin-bottom: 0.16rem;
+  gap: 0.04rem;
+  margin-bottom: 0.18rem;
+  padding: 0.04rem;
+  border-radius: 0.12rem;
+  background: var(--m-primary-light);
 }
 
 .auth-tab {
-  position: relative;
   flex: 1;
-  background: none;
+  padding: 0.09rem 0;
   border: none;
-  padding: 0.02rem 0 0.1rem;
-  font-size: 0.16rem;
-  color: var(--m-text-muted);
+  border-radius: 0.09rem;
+  background: transparent;
+  color: $text-muted;
+  font-family: inherit;
+  font-size: 0.14rem;
+  font-weight: 500;
   cursor: pointer;
 
-  margin-bottom: -0.01rem;
-  text-align: center;
-
   &.active {
-    color: var(--m-primary);
+    background: #fff;
+    color: $primary;
     font-weight: 700;
-
-    &:after {
-      position: absolute;
-      width: 15%;
-      left: 50%;
-      transform: translateX(-50%);
-      height: 0.05rem;
-      content: "";
-      display: block;
-      height: 0.02rem;
-      background-color: var(--m-primary);
-      margin-top: 0.06rem;
-      border-radius: 0.03rem;
-    }
+    box-shadow: 0 0.02rem 0.06rem rgba(51, 71, 91, 0.05);
   }
 }
 
 .bottom-row {
-  text-align: center;
   margin-top: 0.16rem;
   font-size: 0.14rem;
+  text-align: center;
 }
 
-// 访客入口：不显眼的小字链接
 .guest-row {
-  display: flex;
-  flex-direction: column;
+  margin-top: 0.16rem;
+  font-size: 0.12rem;
+  line-height: 1.5;
   text-align: center;
-  margin-top: 0.14rem;
 }
 
 .guest-btn {
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 0.13rem;
+  color: $text-sub;
+  font-size: 0.12rem;
+}
+
+.entry-footer {
+  margin-top: auto;
+  padding-top: 0.28rem;
+  color: $text-sub;
+  font-size: 0.11rem;
+  text-align: center;
+}
+
+@media (max-width: 360px) {
+  .brand-copy h1 {
+    font-size: 0.3rem;
+  }
+
+  .math-decor {
+    right: -0.08rem;
+    transform: scale(0.88);
+    transform-origin: right top;
+  }
+
+  .login {
+    padding: 0.2rem;
+  }
 }
 </style>

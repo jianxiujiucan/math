@@ -1,0 +1,125 @@
+.user-card {
+  position: relative;
+  align-items: center;
+  padding-top: 38rpx;
+}
+
+.logout-btn {
+  position: absolute;
+  top: 20rpx;
+  right: 22rpx;
+  font-size: 23rpx;
+}
+
+.username {
+  margin-bottom: 8rpx;
+  color: #333333;
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.user-meta {
+  color: #999999;
+  font-size: 23rpx;
+  line-height: 1.7;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-bottom: 28rpx;
+}
+
+.stat-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.stat-num {
+  color: #ff6b6b;
+  font-size: 38rpx;
+  font-weight: 800;
+}
+
+.stat-label {
+  color: #999999;
+  font-size: 23rpx;
+}
+
+.type-row {
+  display: grid;
+  grid-template-columns: 1.35fr 0.65fr 1.45fr 0.75fr;
+  align-items: center;
+  min-height: 62rpx;
+  border-bottom: 1rpx solid #f0f0f4;
+  color: #555555;
+  font-size: 22rpx;
+  text-align: center;
+}
+
+.type-row text:first-child {
+  text-align: left;
+}
+
+.type-head {
+  color: #999999;
+  font-size: 20rpx;
+}
+
+.record-row {
+  display: flex;
+  align-items: center;
+  padding: 18rpx 4rpx;
+  border-bottom: 1rpx solid #efeff4;
+}
+
+.record-hover {
+  background: #f7f8fc;
+}
+
+.record-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  gap: 6rpx;
+}
+
+.record-config {
+  color: #333333;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.record-time {
+  color: #999999;
+  font-size: 22rpx;
+}
+
+.record-result {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.record-score {
+  color: #ff6b6b;
+  font-size: 30rpx;
+  font-weight: 800;
+}
+
+.record-detail {
+  color: #b0b0bd;
+  font-size: 38rpx;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 22rpx;
+  color: #999999;
+  font-size: 24rpx;
+}

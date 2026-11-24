@@ -1,0 +1,54 @@
+.keypad {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(4, 92rpx);
+  gap: 18rpx;
+  padding: 16rpx 34rpx calc(20rpx + env(safe-area-inset-bottom));
+  background: transparent;
+  box-shadow: none;
+}
+
+.key {
+  min-width: 0;
+  height: 92rpx;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 24rpx;
+  background: #fffdf2;
+  color: #33475b;
+  font-size: 36rpx;
+  font-weight: 700;
+  line-height: 92rpx;
+}
+
+.key::after {
+  border: 0;
+}
+
+.key-hover {
+  background: #eef2ff;
+  transform: scale(0.96);
+}
+
+.key-action {
+  background: #e8c8d4;
+  color: #8c6575;
+  font-size: 28rpx;
+}
+
+.key-confirm {
+  border-color: #4698c9;
+  background: #4698c9;
+  color: #ffffff;
+  font-size: 30rpx;
+}
+
+.key[disabled] {
+  opacity: 0.45;
+}
