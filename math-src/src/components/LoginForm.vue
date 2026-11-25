@@ -58,7 +58,7 @@ async function submit() {
     </div>
 
     <button class="primary-btn" type="submit" :disabled="loading">
-      {{ loading ? "登录中…" : "登 录 →" }}
+      {{ loading ? "登录中…" : "登 录" }}
     </button>
   </form>
 

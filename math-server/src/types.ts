@@ -42,7 +42,7 @@ export type ResetRow = RowDataPacket & {
   id: number
   code_hash: string
   attempts: number
-  unexpired: boolean
+  expires_at: Date | string
 }
 
 export type ElapsedRow = RowDataPacket & { elapsed: string }

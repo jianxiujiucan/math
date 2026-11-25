@@ -47,4 +47,16 @@ export const schemaStatements: string[] = [
     CONSTRAINT uk_records_session_seq UNIQUE (session_id, seq),
     CONSTRAINT fk_records_session FOREIGN KEY (session_id) REFERENCES quiz_sessions(id) ON DELETE CASCADE
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
+
+  `CREATE TABLE IF NOT EXISTS password_resets (
+    id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    email       VARCHAR(254) NOT NULL,
+    code_hash   CHAR(64) NOT NULL,
+    expires_at  DATETIME(3) NOT NULL,
+    used        TINYINT(1) NOT NULL DEFAULT 0,
+    attempts    TINYINT UNSIGNED NOT NULL DEFAULT 0,
+    created_at  DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    INDEX idx_password_resets_email_created (email, created_at)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
 ]

@@ -5,7 +5,7 @@
 - 运行环境：Node.js 22（本地开发或 VPS）
 - 数据库：MySQL 8+，驱动为 `mysql2`
 - 数据表：首次请求时自动创建缺少的表，已有数据不会被清空
-- 找回密码：管理员人工重置，无邮件服务依赖
+- 找回密码：注册邮箱验证码，也保留管理员人工重置
 
 > MySQL 驱动依赖 Node.js 网络能力，当前版本不再使用 Cloudflare Workers、Hyperdrive 或 Supabase。
 
@@ -41,6 +41,19 @@ ADMIN_TOKEN=管理员口令
 ```
 
 密码中的 `@`、`+`、`#`、`:`、`/` 等字符需要进行 URL 编码，例如 `+` 写成 `%2B`。`.dev.vars` 已被 Git 忽略，不要提交真实密码。
+
+邮箱验证码还需要 SMTP 配置（以 QQ 邮箱为例，密码位置填写 SMTP 授权码）：
+
+```env
+SMTP_HOST=smtp.qq.com
+SMTP_PORT=465
+SMTP_SECURE=true
+SMTP_USER=你的邮箱地址
+SMTP_PASS=邮箱SMTP授权码
+MAIL_FROM="速算挑战 <你的邮箱地址>"
+```
+
+验证码为 6 位数字，15 分钟有效，每个邮箱每分钟最多发送一次，错误 5 次后失效。无论邮箱是否注册，发送接口均返回统一提示。
 
 启动并验证：
 
@@ -86,6 +99,8 @@ const API_BASE = 'http://192.168.x.x:3000'
 | POST | `/api/auth/register` | 注册并登录 |
 | POST | `/api/auth/login` | 登录 |
 | GET | `/api/auth/me` | 当前用户（需 Bearer token） |
+| POST | `/api/auth/forgot-password` | 向注册邮箱发送找回验证码 |
+| POST | `/api/auth/reset-password` | 校验邮箱验证码并重置密码 |
 | POST | `/api/admin/reset-password` | 管理员重置密码（需 `X-Admin-Token`） |
 | POST | `/api/quiz-sessions` | 保存一场答题成绩，事务写入场次与逐题记录 |
 | GET | `/api/profile` | 用户信息与统计（需登录） |
@@ -101,7 +116,7 @@ const API_BASE = 'http://192.168.x.x:3000'
 ```bash
 npm run dev          # tsx watch 热重载
 npm run start        # 非 watch 模式启动
-npm test             # 表达式、配置和 MySQL DDL 测试
+npm test             # 表达式、配置、MySQL DDL 和找回验证码测试
 npm run type-check   # TypeScript 检查
 ```
 

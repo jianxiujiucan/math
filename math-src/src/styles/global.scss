@@ -37,7 +37,7 @@ html {
   --m-bg-gradient: #b9ddf2;
   --m-card-shadow: 0 0.12rem 0.28rem rgba(51, 71, 91, 0.13);
   --m-accent-shadow: 0 0.07rem 0.14rem rgba(63, 115, 146, 0.24);
-  --m-button-gd: #ebc5cf;
+  --m-button-gd: #f599b1;
   --m-active: #62aae7;
   --m-active-text: #42a9dd;
 
@@ -106,7 +106,7 @@ h1 {
   color: #fff;
   background: var(--m-button-gd);
   border: none;
-  border-radius: 0.14rem;
+  border-radius: 0.28rem;
   cursor: pointer;
   box-shadow: $accent-shadow;
   transition: transform 0.1s ease;

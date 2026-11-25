@@ -10,6 +10,12 @@ export interface Bindings {
   JWT_EXPIRES_IN?: string
   BCRYPT_ROUNDS?: string
   CORS_ORIGINS?: string
+  SMTP_HOST?: string
+  SMTP_PORT?: string
+  SMTP_SECURE?: string
+  SMTP_USER?: string
+  SMTP_PASS?: string
+  MAIL_FROM?: string
   /** 管理口令（重置用户密码接口 /api/admin/* 用；不配置则管理接口关闭） */
   ADMIN_TOKEN?: string
 }

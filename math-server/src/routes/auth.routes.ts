@@ -1,13 +1,16 @@
 import { Hono } from 'hono'
 import bcrypt from 'bcryptjs'
-import type { ResultSetHeader } from 'mysql2'
+import type { ResultSetHeader, RowDataPacket } from 'mysql2'
 import { withDb } from '../db'
 import { requireAuth, signToken } from '../auth'
 import { getConfig, type AppEnv } from '../env'
 import { httpError } from '../httpError'
 import { bodyOf } from '../body'
+import { rateLimit } from '../rateLimit'
+import { generateRecoveryCode, hashRecoveryCode, recoveryCodesMatch } from '../recovery'
+import { sendPasswordResetCode } from '../mail'
 import { isValidEmail, isValidPassword, isValidUsername, normalizeUsername } from '../validate'
-import type { UserAuthRow, UserPublicRow } from '../types'
+import type { ResetRow, UserAuthRow, UserPublicRow } from '../types'
 
 export const authRoutes = new Hono<AppEnv>()
 
@@ -105,4 +108,121 @@ authRoutes.get('/me', requireAuth, async (c) => {
   })
   if (!row) throw httpError(401, 'UNAUTHORIZED', '账号不存在，请重新登录')
   return c.json({ user: row })
+})
+
+/* ---------- 邮箱验证码找回密码 ---------- */
+const recoveryLimiter = rateLimit(5, 10 * 60_000)
+const RECOVERY_MESSAGE = '如果邮箱已注册，验证码将会送达，请查收邮件'
+
+authRoutes.post('/forgot-password', recoveryLimiter, async (c) => {
+  const body = await bodyOf(c)
+  const email = String(body.email ?? '').trim().toLowerCase()
+  if (!isValidEmail(email)) throw httpError(400, 'INVALID_EMAIL', '邮箱格式不正确')
+
+  const cfg = getConfig(c.env)
+  const code = generateRecoveryCode()
+  const codeHash = hashRecoveryCode(email, code, cfg.jwtSecret)
+  const expiresAt = new Date(Date.now() + 15 * 60_000)
+
+  // 用户行锁防止同一邮箱并发重复发送；未注册或 60 秒内已发送时同样返回统一文案。
+  const resetId = await withDb(c.env, async (db) => {
+    await db.beginTransaction()
+    try {
+      const [users] = await db.execute<(RowDataPacket & { id: number })[]>(
+        'SELECT id FROM users WHERE email = ? FOR UPDATE',
+        [email]
+      )
+      if (!users[0]) {
+        await db.rollback()
+        return null
+      }
+      const [recent] = await db.execute<(RowDataPacket & { created_at: Date })[]>(
+        'SELECT created_at FROM password_resets WHERE email = ? ORDER BY id DESC LIMIT 1',
+        [email]
+      )
+      if (recent[0] && Date.now() - new Date(recent[0].created_at).getTime() < 60_000) {
+        await db.rollback()
+        return null
+      }
+      await db.execute('UPDATE password_resets SET used = 1 WHERE email = ? AND used = 0', [email])
+      const [result] = await db.execute<ResultSetHeader>(
+        'INSERT INTO password_resets (email, code_hash, expires_at) VALUES (?, ?, ?)',
+        [email, codeHash, expiresAt]
+      )
+      await db.commit()
+      return result.insertId
+    } catch (error) {
+      await db.rollback().catch(() => {})
+      throw error
+    }
+  })
+
+  if (resetId === null) return c.json({ message: RECOVERY_MESSAGE })
+  try {
+    await sendPasswordResetCode(c.env, email, code)
+  } catch (error) {
+    await withDb(c.env, (db) => db.execute('UPDATE password_resets SET used = 1 WHERE id = ?', [resetId]))
+    console.error('[mail] failed to send recovery code', error)
+    throw httpError(503, 'MAIL_SEND_FAILED', '验证码发送失败，请稍后重试')
+  }
+  return c.json({ message: RECOVERY_MESSAGE })
+})
+
+authRoutes.post('/reset-password', recoveryLimiter, async (c) => {
+  const body = await bodyOf(c)
+  const email = String(body.email ?? '').trim().toLowerCase()
+  const code = String(body.code ?? '').trim()
+  const newPassword = String(body.newPassword ?? '')
+  if (!isValidEmail(email)) throw httpError(400, 'INVALID_EMAIL', '邮箱格式不正确')
+  if (!/^\d{6}$/.test(code)) throw httpError(400, 'INVALID_CODE', '请输入 6 位数字验证码')
+  if (!isValidPassword(newPassword)) {
+    throw httpError(400, 'INVALID_PASSWORD', '密码需为 8 位以上字母和数字的组合')
+  }
+
+  const row = await withDb(c.env, async (db) => {
+    const [rows] = await db.execute<ResetRow[]>(
+      `SELECT id, code_hash, attempts, expires_at
+       FROM password_resets WHERE email = ? AND used = 0
+       ORDER BY id DESC LIMIT 1`,
+      [email]
+    )
+    return rows[0]
+  })
+  if (!row || row.attempts >= 5) {
+    throw httpError(400, 'RESET_CODE_INVALID', '验证码不正确或已过期，请重新获取')
+  }
+  if (new Date(row.expires_at).getTime() <= Date.now()) {
+    await withDb(c.env, (db) => db.execute('UPDATE password_resets SET used = 1 WHERE id = ?', [row.id]))
+    throw httpError(400, 'RESET_CODE_INVALID', '验证码不正确或已过期，请重新获取')
+  }
+
+  const expected = hashRecoveryCode(email, code, getConfig(c.env).jwtSecret)
+  if (!recoveryCodesMatch(expected, row.code_hash)) {
+    await withDb(c.env, (db) => db.execute(
+      `UPDATE password_resets
+       SET used = IF(attempts + 1 >= 5, 1, used), attempts = attempts + 1
+       WHERE id = ?`,
+      [row.id]
+    ))
+    throw httpError(400, 'RESET_CODE_INVALID', '验证码不正确或已过期，请重新获取')
+  }
+
+  const passwordHash = await bcrypt.hash(newPassword, getConfig(c.env).bcryptRounds)
+  const changed = await withDb(c.env, async (db) => {
+    await db.beginTransaction()
+    try {
+      const [result] = await db.execute<ResultSetHeader>(
+        'UPDATE users SET password_hash = ? WHERE email = ?',
+        [passwordHash, email]
+      )
+      await db.execute('UPDATE password_resets SET used = 1 WHERE email = ? AND used = 0', [email])
+      await db.commit()
+      return result.affectedRows > 0
+    } catch (error) {
+      await db.rollback().catch(() => {})
+      throw error
+    }
+  })
+  if (!changed) throw httpError(400, 'RESET_CODE_INVALID', '验证码不正确或已过期，请重新获取')
+  return c.json({ message: '密码已重置，请使用新密码登录' })
 })

@@ -25,6 +25,20 @@ export function registerApi(username: string, password: string, email: string) {
   })
 }
 
+export function forgotPasswordApi(email: string) {
+  return api<{ message: string }>('/api/auth/forgot-password', {
+    method: 'POST',
+    body: { email: email.trim().toLowerCase() },
+  })
+}
+
+export function resetPasswordApi(email: string, code: string, newPassword: string) {
+  return api<{ message: string }>('/api/auth/reset-password', {
+    method: 'POST',
+    body: { email: email.trim().toLowerCase(), code, newPassword },
+  })
+}
+
 /** 管理员重置用户密码（/admin 管理页用；口令经 X-Admin-Token 头传递） */
 export function adminResetPasswordApi(username: string, newPassword: string, adminToken: string) {
   return api<{ message: string }>('/api/admin/reset-password', {

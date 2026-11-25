@@ -74,6 +74,20 @@ function registerApi(username, password, email) {
   })
 }
 
+function forgotPasswordApi(email) {
+  return request('/api/auth/forgot-password', {
+    method: 'POST',
+    body: { email: email.trim().toLowerCase() },
+  })
+}
+
+function resetPasswordApi(email, code, newPassword) {
+  return request('/api/auth/reset-password', {
+    method: 'POST',
+    body: { email: email.trim().toLowerCase(), code, newPassword },
+  })
+}
+
 function adminResetPasswordApi(username, newPassword, adminToken) {
   return request('/api/admin/reset-password', {
     method: 'POST',
@@ -109,7 +123,9 @@ module.exports = {
   fetchProfileApi,
   fetchSessionDetailApi,
   fetchSessionsApi,
+  forgotPasswordApi,
   loginApi,
   registerApi,
+  resetPasswordApi,
   saveSessionApi,
 }

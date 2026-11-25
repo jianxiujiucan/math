@@ -8,3 +8,11 @@ JWT_SECRET=
 
 # 管理口令（/admin 管理页重置用户密码用；不配置则管理接口关闭）
 ADMIN_TOKEN=
+
+# QQ 邮箱 SMTP（授权码，不是邮箱登录密码）
+SMTP_HOST=smtp.qq.com
+SMTP_PORT=465
+SMTP_SECURE=true
+SMTP_USER=
+SMTP_PASS=
+MAIL_FROM=
