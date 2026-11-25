@@ -5,7 +5,9 @@
 
   <block wx:elif="{{profile}}">
     <view class="card user-card">
-      <view class="link-btn logout-btn" bindtap="logout">退出登录</view>
+      <button class="logout-btn" aria-label="退出登录" bindtap="logout">
+        <image class="logout-icon" src="/assets/img/icon/logout.svg" mode="aspectFit" />
+      </button>
       <view class="username">{{profile.user.username}}</view>
       <view class="user-meta">{{profile.user.email}}</view>
       <view class="user-meta">注册于 {{profile.createdAtText}}</view>

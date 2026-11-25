@@ -39,7 +39,7 @@
 
 .key-action {
   background: #e8c8d4;
-  color: #8c6575;
+  color: #e45c94;
   font-size: 28rpx;
 }
 

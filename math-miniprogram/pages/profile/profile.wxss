@@ -4,11 +4,24 @@
   padding-top: 38rpx;
 }
 
-.logout-btn {
+button.logout-btn {
   position: absolute;
-  top: 20rpx;
-  right: 22rpx;
-  font-size: 23rpx;
+  top: 12rpx;
+  right: 14rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64rpx;
+  height: 64rpx;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  line-height: 1;
+}
+
+.logout-icon {
+  width: 48rpx;
+  height: 48rpx;
 }
 
 .username {

@@ -1,17 +1,17 @@
 <script setup lang="ts">
 defineProps<{
-  disabled: boolean
-  confirmDisabled: boolean
-  aboveTabs: boolean
-}>()
+  disabled: boolean;
+  confirmDisabled: boolean;
+  aboveTabs: boolean;
+}>();
 
 const emit = defineEmits<{
-  digit: [digit: string]
-  backspace: []
-  confirm: []
-}>()
+  digit: [digit: string];
+  backspace: [];
+  confirm: [];
+}>();
 
-const digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+const digits = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 </script>
 
 <template>
@@ -57,7 +57,7 @@ const digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 </template>
 
 <style scoped lang="scss">
-@use '../styles/variables' as *;
+@use "../styles/variables" as *;
 
 .keypad-layout {
   --keypad-bottom: 0px;
@@ -120,7 +120,7 @@ const digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 .key-action {
   background: var(--m-pink);
-  color: #8c6575;
+  color: #e45c94;
   font-size: 0.14rem;
 }
 

@@ -1,17 +1,17 @@
 <view wx:if="{{ready}}" class="page quiz-page {{finished ? 'is-finished' : ''}}">
   <view class="quiz-topbar">
-    <button class="back-btn" aria-label="返回答题设置" bindtap="goSetup">‹</button>
-    <text class="quiz-title">口算挑战</text>
-    <sound-toggle />
   </view>
 
   <view class="quiz-header">
     <text class="badge">{{progress}}</text>
-    <text class="badge">{{timer}}</text>
+    <view class="badge timer-badge">
+      <image class="timer-icon" src="/assets/img/icon/timer.svg" mode="aspectFit" />
+      <text>{{timer}}</text>
+    </view>
   </view>
 
   <view class="card question-card">
-    <view class="question-meta"><text class="question-type">{{quizMeta}}</text><text>第 {{current + 1}} 题</text></view>
+    <view class="question-meta"><text class="question-type">{{quizMeta}}</text><sound-toggle /></view>
 
     <text class="decor-plus" aria-hidden="true">+</text>
     <text class="decor-number" aria-hidden="true">8</text>

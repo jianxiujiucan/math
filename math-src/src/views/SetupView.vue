@@ -280,7 +280,7 @@ function start() {
   padding: 0.08rem 0.16rem;
   border-radius: 0.18rem;
   background: #f7e7ed;
-  color: #8c6575;
+  color: #e45c94;
   font-size: 0.11rem;
 
   span {

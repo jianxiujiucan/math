@@ -5,9 +5,9 @@ Component({
     loggedIn: false,
     selected: -1,
     tabs: [
-      { label: "首页", mark: "练", path: "/pages/setup/setup" },
-      { label: "排行", mark: "榜", path: "/pages/leaderboard/leaderboard" },
-      { label: "我的", mark: "我", path: "/pages/profile/profile" },
+      { label: "首页", icon: "/assets/img/icon/home.svg", path: "/pages/setup/setup" },
+      { label: "排行", icon: "/assets/img/icon/ranking.svg", path: "/pages/leaderboard/leaderboard" },
+      { label: "我的", icon: "/assets/img/icon/profile.svg", path: "/pages/profile/profile" },
     ],
   },
 

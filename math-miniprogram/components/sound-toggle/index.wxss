@@ -1,4 +1,4 @@
-.sound-toggle {
+button.sound-toggle {
   display: flex;
   align-items: center;
   justify-content: center;

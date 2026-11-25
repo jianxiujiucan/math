@@ -4,9 +4,9 @@
     wx:key="path"
     class="tab {{selected === index ? 'active' : ''}}"
     data-path="{{item.path}}"
+    aria-label="{{item.label}}"
     bindtap="onSwitch"
   >
-    <view class="tab-mark">{{item.mark}}</view>
-    <text>{{item.label}}</text>
+    <image class="tab-icon" src="{{item.icon}}" mode="aspectFit" />
   </view>
 </view>

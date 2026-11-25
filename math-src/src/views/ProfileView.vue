@@ -2,6 +2,7 @@
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
+import logoutIcon from "@/assets/img/icon/logout.svg";
 import { fetchProfileApi, fetchSessionsApi } from "@/api";
 import { ApiError } from "@/api/http";
 import type { PerTypeStat, ProfileResponse, SessionSummary } from "@/types/api";
@@ -97,7 +98,15 @@ onMounted(load);
   <template v-else-if="profile">
     <!-- 用户信息卡 -->
     <div class="card user-card">
-      <button class="link-btn logout-btn" @click="logout">退出登录</button>
+      <button
+        type="button"
+        class="logout-btn"
+        aria-label="退出登录"
+        title="退出登录"
+        @click="logout"
+      >
+        <img :src="logoutIcon" alt="" />
+      </button>
       <div class="username">{{ profile.user.username }}</div>
       <div class="user-meta">{{ profile.user.email }}</div>
       <div class="user-meta">
@@ -215,10 +224,28 @@ onMounted(load);
 
 .logout-btn {
   position: absolute;
-  top: 0.14rem;
-  right: 0.16rem;
-  font-size: 0.13rem;
-  color: $text-muted;
+  top: 0.1rem;
+  right: 0.12rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.34rem;
+  height: 0.34rem;
+  padding: 0.04rem;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--m-primary-light);
+  }
+
+  img {
+    display: block;
+    width: 0.26rem;
+    height: 0.26rem;
+  }
 }
 
 .username {

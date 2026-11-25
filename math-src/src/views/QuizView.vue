@@ -11,6 +11,7 @@ import {
 import { useRouter } from "vue-router";
 import NumericKeypad from "@/components/NumericKeypad.vue";
 import SoundToggle from "@/components/SoundToggle.vue";
+import timerIcon from "@/assets/img/icon/timer.svg";
 import { useMobile } from "@/composables/useMobile";
 import { useSound } from "@/composables/useSound";
 import { useTimer } from "@/composables/useTimer";
@@ -287,7 +288,10 @@ function goHome() {
 
   <div class="quiz-header">
     <span class="badge">{{ progress }}</span>
-    <span class="badge">{{ display }}</span>
+    <span class="badge timer-badge">
+      <img class="timer-icon" :src="timerIcon" alt="" />
+      <span>{{ display }}</span>
+    </span>
   </div>
 
   <div class="card question-card">
@@ -384,6 +388,10 @@ function goHome() {
 }
 
 .badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.06rem;
   background: var(--m-cream);
   color: $primary;
   font-size: 0.14rem;
@@ -396,8 +404,15 @@ function goHome() {
 
   &:last-child {
     background: #f7e7ed;
-    color: #8c6575;
+    color: #e45c94;
   }
+}
+
+.timer-icon {
+  display: block;
+  flex-shrink: 0;
+  width: 0.18rem;
+  height: 0.18rem;
 }
 
 .question-card {
@@ -437,7 +452,7 @@ function goHome() {
   padding: 0.07rem 0.12rem;
   border-radius: 0.16rem;
   background: #f7e7ed;
-  color: #8c6575;
+  color: #e45c94;
 }
 
 .english-label {
