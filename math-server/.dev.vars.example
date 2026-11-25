@@ -1,7 +1,7 @@
 # 本地开发用密钥配置（复制为 .dev.vars 并填真值；.dev.vars 已被 gitignore）
 
-# Supabase Transaction pooler 连接串（控制台 Connect → server 标签）
-DATABASE_URL=
+# MySQL 连接串（后端启动时自动创建缺少的数据表）
+DATABASE_URL=mysql://math_quiz_app:请替换为应用账号密码@127.0.0.1:3306/math_quiz
 
 # JWT 签名密钥（长随机串）
 JWT_SECRET=

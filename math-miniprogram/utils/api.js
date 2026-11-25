@@ -50,8 +50,11 @@ function request(path, options = {}) {
         }
         resolve(data)
       },
-      fail() {
-        reject(new ApiError(0, 'NETWORK_ERROR', '无法连接到服务器，请检查网络和接口域名配置'))
+      fail(error) {
+        const url = `${API_BASE}${path}`
+        console.error('[api] request failed', url, error)
+        const reason = error?.errMsg || '未知网络错误'
+        reject(new ApiError(0, 'NETWORK_ERROR', `无法连接到服务器：${reason}`))
       },
     })
   })

@@ -51,6 +51,10 @@
   font-weight: 700;
 }
 
+.setup-brand .title {
+  font-size: 48rpx;
+}
+
 .brand-mark {
   display: flex;
   align-items: center;
@@ -59,13 +63,13 @@
   height: 68rpx;
   border-radius: 50%;
   background: #fffdf2;
-  color: #4698c9;
+  color: #62aae7;
   font-family: Arial, sans-serif;
 }
 
 .setup-hero {
   position: relative;
-  padding: 42rpx 8rpx 32rpx;
+  padding: 22rpx 8rpx 32rpx;
 }
 
 .setup-heading {
@@ -109,7 +113,7 @@
   width: 80rpx;
   height: 80rpx;
   background: #fffdf2;
-  color: #4698c9;
+  color: #62aae7;
 }
 
 .setup-symbols .plus {

@@ -12,7 +12,7 @@
 
   <view class="card question-card">
     <view class="question-meta"><text class="question-type">{{quizMeta}}</text><text>第 {{current + 1}} 题</text></view>
-    <text class="english-label">QUICK MATH</text>
+
     <text class="decor-plus" aria-hidden="true">+</text>
     <text class="decor-number" aria-hidden="true">8</text>
     <view class="question-line">

@@ -28,17 +28,24 @@
 }
 
 .pill {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   min-width: 0;
   margin: 0;
   width: 100%;
   padding: 12rpx 6rpx;
   border: 2rpx solid #d8e7ef;
-  border-radius: 20rpx;
+  border-radius: 40rpx;
   background: #ffffff;
   color: #527087;
-  font-size: 24rpx;
+  font-size: 30rpx;
   font-weight: 400;
   line-height: 1.5;
+}
+
+button:not([size=mini]) {
+  width: unset !important;
 }
 
 .pill::after {
@@ -46,10 +53,10 @@
 }
 
 .pill.active {
-  border-color: #4698c9;
-  background: #4698c9;
+  border-color: #62aae7;
+  background: #62aae7;
   color: #ffffff;
-  font-weight: 600;
+
 }
 
 .pill-hover {

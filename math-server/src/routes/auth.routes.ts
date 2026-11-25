@@ -1,16 +1,17 @@
 import { Hono } from 'hono'
 import bcrypt from 'bcryptjs'
+import type { ResultSetHeader } from 'mysql2'
 import { withDb } from '../db'
 import { requireAuth, signToken } from '../auth'
 import { getConfig, type AppEnv } from '../env'
 import { httpError } from '../httpError'
 import { bodyOf } from '../body'
 import { isValidEmail, isValidPassword, isValidUsername, normalizeUsername } from '../validate'
-import type { IdRow, UserAuthRow, UserPublicRow } from '../types'
+import type { UserAuthRow, UserPublicRow } from '../types'
 
 export const authRoutes = new Hono<AppEnv>()
 
-// Workers 运行时 bcryptjs 探测不到随机源，显式用 WebCrypto 兜底
+// bcryptjs 随机源兜底
 bcrypt.setRandomFallback((len: number) => {
   const buf = new Uint8Array(len)
   crypto.getRandomValues(buf)
@@ -19,7 +20,7 @@ bcrypt.setRandomFallback((len: number) => {
 
 /**
  * 用户不存在时也做一次 bcrypt.compare，拉平响应时间（缓解时序侧信道枚举）。
- * 注意必须懒计算：Workers 禁止在全局作用域生成随机值（bcrypt 加盐需要随机数）。
+ * 注意必须懒计算，避免服务启动时生成随机值。
  */
 let dummyHash: string | null = null
 function getDummyHash(): string {
@@ -30,7 +31,7 @@ function getDummyHash(): string {
 /* ---------- 注册 ---------- */
 authRoutes.post('/register', async (c) => {
   const body = await bodyOf(c)
-  // 用户名经 NFC 规范化后存储（保留大小写）；唯一性由 LOWER(username) 唯一索引保证大小写不敏感
+  // 用户名经 NFC 规范化后存储；utf8mb4_unicode_ci 唯一索引保证大小写不敏感
   const username = normalizeUsername(String(body.username ?? '').trim())
   const password = String(body.password ?? '')
   const email = String(body.email ?? '').trim().toLowerCase()
@@ -49,20 +50,20 @@ authRoutes.post('/register', async (c) => {
   const hash = await bcrypt.hash(password, cfg.bcryptRounds)
   try {
     const id = await withDb(c.env, async (db) => {
-      const { rows } = await db.query<IdRow>(
-        'INSERT INTO users (username, password_hash, email) VALUES ($1, $2, $3) RETURNING id',
+      const [result] = await db.execute<ResultSetHeader>(
+        'INSERT INTO users (username, password_hash, email) VALUES (?, ?, ?)',
         [username, hash, email]
       )
-      return rows[0].id
+      return result.insertId
     })
     const user = { id, username, email }
     const token = await signToken({ uid: id, username }, cfg.jwtSecret, cfg.jwtExpiresIn)
     return c.json({ token, user }, 201)
   } catch (e) {
-    // Postgres 唯一约束冲突（列唯一 + LOWER 表达式唯一索引都算重名）
-    const err = e as { code?: string; constraint?: string }
-    if (err.code === '23505') {
-      if (err.constraint === 'uk_users_email') {
+    // MySQL ER_DUP_ENTRY：按约束名区分别名与邮箱冲突
+    const err = e as { code?: string; errno?: number; sqlMessage?: string }
+    if (err.code === 'ER_DUP_ENTRY' || err.errno === 1062) {
+      if (err.sqlMessage?.includes('uk_users_email') || err.sqlMessage?.includes('email')) {
         throw httpError(409, 'EMAIL_TAKEN', '该邮箱已被注册')
       }
       throw httpError(409, 'USERNAME_TAKEN', '该用户名已被注册')
@@ -79,8 +80,8 @@ authRoutes.post('/login', async (c) => {
   if (!username || !password) throw httpError(400, 'MISSING_FIELDS', '请输入用户名和密码')
 
   const row = await withDb(c.env, async (db) => {
-    const { rows } = await db.query<UserAuthRow>(
-      'SELECT id, username, email, password_hash FROM users WHERE LOWER(username) = LOWER($1)',
+    const [rows] = await db.execute<UserAuthRow[]>(
+      'SELECT id, username, email, password_hash FROM users WHERE LOWER(username) = LOWER(?)',
       [username]
     )
     return rows[0]
@@ -96,8 +97,8 @@ authRoutes.post('/login', async (c) => {
 /* ---------- 当前用户 ---------- */
 authRoutes.get('/me', requireAuth, async (c) => {
   const row = await withDb(c.env, async (db) => {
-    const { rows } = await db.query<UserPublicRow>(
-      'SELECT id, username, email, created_at AS "createdAt" FROM users WHERE id = $1',
+    const [rows] = await db.execute<UserPublicRow[]>(
+      'SELECT id, username, email, created_at AS `createdAt` FROM users WHERE id = ?',
       [c.get('user').uid]
     )
     return rows[0]

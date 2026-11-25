@@ -13,7 +13,7 @@ import { adminRoutes } from './routes/admin.routes'
 
 const app = new Hono<AppEnv>()
 
-// 每个 isolate 首次请求前完成幂等建表（之后命中缓存，开销为零）
+// 每个 Node 进程首次请求前完成幂等建表（之后命中缓存，开销为零）
 app.use('*', async (c, next) => {
   await ensureDb(c.env)
   await next()
@@ -53,5 +53,5 @@ app.onError((err, c) => {
   return c.json({ error: { code: 'INTERNAL', message: '服务器内部错误' } }, 500)
 })
 
-// Cloudflare Workers 入口（Hono 应用即 fetch handler）
+// Hono 应用入口（Node 服务与接口测试共用）
 export default app

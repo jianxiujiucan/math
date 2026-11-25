@@ -1,4 +1,5 @@
 import { Hono } from 'hono'
+import type { ResultSetHeader } from 'mysql2'
 import { withDb } from '../db'
 import { requireAuth } from '../auth'
 import { httpError } from '../httpError'
@@ -6,7 +7,7 @@ import { bodyOf } from '../body'
 import { isValidConfig } from '../validate'
 import { evalExpr } from '../expr'
 import type { AppEnv } from '../env'
-import type { IdRow, QuestionRecordDto } from '../types'
+import type { QuestionRecordDto } from '../types'
 
 export const quizRoutes = new Hono<AppEnv>()
 
@@ -71,12 +72,11 @@ quizRoutes.post('/', requireAuth, async (c) => {
 
   const sessionId = await withDb(c.env, async (db) => {
     try {
-      await db.query('BEGIN')
-      const { rows } = await db.query<IdRow>(
+      await db.beginTransaction()
+      const [result] = await db.execute<ResultSetHeader>(
         `INSERT INTO quiz_sessions
            (user_id, count_opt, op_type, range_limit, operands, carry, total, correct, score, duration_ms)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-         RETURNING id`,
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           uid,
           cfg.count,
@@ -90,25 +90,24 @@ quizRoutes.post('/', requireAuth, async (c) => {
           durationMs,
         ]
       )
-      const id = rows[0].id
+      const id = result.insertId
 
       // 批量插入题目明细（构造多行 VALUES 占位符）
-      const values: unknown[] = []
-      const tuples = normalized.map((q, i) => {
-        const base = i * 7
+      const values: Array<string | number | boolean> = []
+      const tuples = normalized.map((q) => {
         values.push(id, q.seq, q.expr, q.userAnswer, q.correctAnswer, q.isCorrect, q.timeMs)
-        return `($${base + 1}, $${base + 2}, $${base + 3}, $${base + 4}, $${base + 5}, $${base + 6}, $${base + 7})`
+        return '(?, ?, ?, ?, ?, ?, ?)'
       })
-      await db.query(
+      await db.execute<ResultSetHeader>(
         `INSERT INTO question_records
            (session_id, seq, expr, user_answer, correct_answer, is_correct, time_ms)
          VALUES ${tuples.join(', ')}`,
         values
       )
-      await db.query('COMMIT')
+      await db.commit()
       return id
     } catch (e) {
-      await db.query('ROLLBACK').catch(() => {})
+      await db.rollback().catch(() => {})
       throw e
     }
   })

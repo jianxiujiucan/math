@@ -15,6 +15,7 @@
 
 .key {
   min-width: 0;
+  width: 200rpx !important;
   height: 92rpx;
   margin: 0;
   padding: 0;

@@ -1,5 +1,5 @@
 const { loginApi, registerApi } = require('../../utils/api')
-const { clearAuth, getStoredUser, saveAuth } = require('../../utils/auth')
+const { getStoredUser, saveAuth } = require('../../utils/auth')
 const { emailError, passwordError, usernameError } = require('../../utils/validate')
 
 Page({
@@ -22,7 +22,11 @@ Page({
   },
 
   onShow() {
-    this.setData({ user: getStoredUser(), loading: false })
+    if (getStoredUser()) {
+      this.afterAuth()
+      return
+    }
+    this.setData({ user: null, loading: false })
     const tabBar = this.getTabBar()
     if (tabBar) tabBar.refresh(this.route)
   },
@@ -110,10 +114,4 @@ Page({
     wx.navigateTo({ url: '/pages/forgot/forgot' })
   },
 
-  logout() {
-    clearAuth()
-    this.setData({ user: null, loading: false, errorMsg: '' })
-    const tabBar = this.getTabBar()
-    if (tabBar) tabBar.refresh(this.route)
-  },
 })

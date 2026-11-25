@@ -1,19 +1,19 @@
 <script setup lang="ts" generic="T extends string | number">
 export interface PillOption<T> {
-  label: string
-  value: T
-  disabled?: boolean
+  label: string;
+  value: T;
+  disabled?: boolean;
 }
 
 defineProps<{
-  modelValue: T
-  options: PillOption<T>[]
-  label?: string
-}>()
+  modelValue: T;
+  options: PillOption<T>[];
+  label?: string;
+}>();
 
 const emit = defineEmits<{
-  'update:modelValue': [value: T]
-}>()
+  "update:modelValue": [value: T];
+}>();
 </script>
 
 <template>
@@ -36,7 +36,7 @@ const emit = defineEmits<{
 </template>
 
 <style scoped lang="scss">
-@use '../styles/variables' as *;
+@use "../styles/variables" as *;
 
 .option-group {
   margin-bottom: 0.13rem;
@@ -59,9 +59,9 @@ const emit = defineEmits<{
   border: 0.01rem solid #d8e7ef;
   background: #fff;
   color: var(--m-text-sub);
-  border-radius: 0.1rem;
+  border-radius: 0.2rem;
   padding: 0.08rem 0.14rem;
-  font-size: 0.12rem;
+  font-size: 0.14rem;
   cursor: pointer;
   transition: all 0.15s ease;
   user-select: none;

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
 import PasswordInput from "@/components/PasswordInput.vue";
 import { useAuthStore } from "@/stores/auth";
 import { ApiError } from "@/api/http";
@@ -8,8 +7,6 @@ import { ApiError } from "@/api/http";
 // 切换到注册 tab（由父组件 EntryView 处理）
 const emit = defineEmits<{ switch: [] }>();
 
-const route = useRoute();
-const router = useRouter();
 const auth = useAuthStore();
 
 const username = ref("");
@@ -26,12 +23,6 @@ async function submit() {
   loading.value = true;
   try {
     await auth.login(username.value, password.value);
-    // 默认进入答题设置页；带 redirect（如中途去登录）则回跳
-    const redirect =
-      typeof route.query.redirect === "string"
-        ? route.query.redirect
-        : "/setup";
-    router.push(redirect);
   } catch (e) {
     errorMsg.value = e instanceof ApiError ? e.message : "登录失败，请稍后再试";
   } finally {

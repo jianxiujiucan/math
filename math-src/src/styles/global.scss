@@ -19,7 +19,7 @@ html {
 
 :root {
   --m-bg: #fffdf2;
-  --m-primary: #4698c9;
+  --m-primary: #62aae7;
   --m-primary-light: #e8f5fb;
   --m-accent-from: #e8c8d4;
   --m-accent-to: #a5677e;
@@ -37,7 +37,9 @@ html {
   --m-bg-gradient: #b9ddf2;
   --m-card-shadow: 0 0.12rem 0.28rem rgba(51, 71, 91, 0.13);
   --m-accent-shadow: 0 0.07rem 0.14rem rgba(63, 115, 146, 0.24);
-  --m-button-gd: var(--m-primary);
+  --m-button-gd: #ebc5cf;
+  --m-active: #62aae7;
+  --m-active-text: #42a9dd;
 
   --m-bottom-tabs-space: 0.78rem;
   --m-keypad-height: max(2.54rem, 254px);

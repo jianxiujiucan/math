@@ -19,77 +19,75 @@ export interface QuestionRecordDto {
   timeMs: number
 }
 
-/* ---------- pg 查询行类型 ----------
- * 用 type 别名（隐式索引签名）以满足 pg 的 QueryResultRow 约束。
- * 注意 pg 类型映射：int8（COUNT/SUM/BIGINT）返回 string；numeric（ROUND/AVG）返回 string；
- * boolean 返回真正的 boolean；int2/int4 返回 number。 */
+/* ---------- MySQL 查询行类型 ---------- */
+import type { RowDataPacket } from 'mysql2'
 
-export type IdRow = { id: number }
+export type IdRow = RowDataPacket & { id: number }
 
-export type UserAuthRow = {
+export type UserAuthRow = RowDataPacket & {
   id: number
   username: string
   email: string
   password_hash: string
 }
 
-export type UserPublicRow = {
+export type UserPublicRow = RowDataPacket & {
   id: number
   username: string
   email: string
-  created_at: string
+  createdAt: string | Date
 }
 
-export type ResetRow = {
+export type ResetRow = RowDataPacket & {
   id: number
   code_hash: string
   attempts: number
   unexpired: boolean
 }
 
-export type ElapsedRow = { elapsed: string }
+export type ElapsedRow = RowDataPacket & { elapsed: string }
 
-export type TotalsRow = {
-  totalSessions: string
-  totalQuestions: string | null
-  totalCorrect: string | null
+export type TotalsRow = RowDataPacket & {
+  totalSessions: number | string
+  totalQuestions: number | string | null
+  totalCorrect: number | string | null
 }
 
-export type PerTypeRow = {
+export type PerTypeRow = RowDataPacket & {
   opType: string
-  sessions: string
-  bestAvgMs: string | null
+  sessions: number | string
+  bestAvgMs: number | string | null
   bestScore: number | null
 }
 
-export type SessionRow = {
+export type SessionRow = RowDataPacket & {
   id: number
   opType: string
   count: number
   range: number
   operands: number
-  carry: boolean
+  carry: number | boolean
   total: number
   correct: number
   score: number
   durationMs: number
-  createdAt: string
+  createdAt: string | Date
 }
 
-export type CountRow = { total: string }
+export type CountRow = RowDataPacket & { total: number | string }
 
-export type QuestionRow = {
+export type QuestionRow = RowDataPacket & {
   seq: number
   expr: string
   userAnswer: string
   correctAnswer: number
-  isCorrect: boolean
+  isCorrect: number | boolean
   timeMs: number
 }
 
-export type LeaderboardRow = {
+export type LeaderboardRow = RowDataPacket & {
   username: string
-  avgMs: string
+  avgMs: number | string
   total: number
-  createdAt: string
+  createdAt: string | Date
 }

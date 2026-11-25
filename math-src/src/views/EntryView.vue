@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import LoginForm from "@/components/LoginForm.vue";
 import RegisterForm from "@/components/RegisterForm.vue";
@@ -11,6 +11,20 @@ const auth = useAuthStore();
 
 const tab = ref<"login" | "register">(
   route.query.tab === "register" ? "register" : "login"
+);
+
+// 已登录用户不再停留欢迎页，统一进入答题设置；保留成绩保存后的回跳。
+watch(
+  () => auth.state.user,
+  (user) => {
+    if (!user) return;
+    const redirect =
+      typeof route.query.redirect === "string"
+        ? route.query.redirect
+        : "/setup";
+    void router.replace(redirect);
+  },
+  { immediate: true }
 );
 
 function switchTab(t: "login" | "register") {
@@ -33,22 +47,9 @@ function switchTab(t: "login" | "register") {
       <span class="math-badge plus">+</span>
       <span class="math-badge divide">÷</span>
     </div>
-    <span class="hero-equation">3 + 5 = 8</span>
   </header>
 
-  <div class="login">
-    <template v-if="auth.state.user">
-      <div class="entry-heading">
-        <p>{{ auth.state.user.username }}，准备好开始新一组练习了吗？</p>
-      </div>
-      <button class="primary-btn" @click="router.push('/setup')">
-        开始答题 →
-      </button>
-      <p class="bottom-row">
-        <button class="link-btn" @click="auth.logout()">退出登录</button>
-      </p>
-    </template>
-    <template v-else>
+  <div v-if="!auth.state.user" class="login">
       <div class="entry-heading">
         <h2>{{ tab === "login" ? "欢迎回来" : "创建账号" }}</h2>
         <p>
@@ -79,7 +80,6 @@ function switchTab(t: "login" | "register") {
       </div>
       <LoginForm v-if="tab === 'login'" @switch="switchTab('register')" />
       <RegisterForm v-else @switch="switchTab('login')" />
-    </template>
   </div>
 
   <div v-if="!auth.state.user" class="guest-row">
@@ -253,7 +253,7 @@ function switchTab(t: "login" | "register") {
 
   &.active {
     background: #fff;
-    color: $primary;
+    color: var(--m-active-text);
     font-weight: 700;
     box-shadow: 0 0.02rem 0.06rem rgba(51, 71, 91, 0.05);
   }

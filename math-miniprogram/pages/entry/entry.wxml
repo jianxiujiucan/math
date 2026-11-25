@@ -5,22 +5,10 @@
       <text class="brand-title">速算挑战</text>
       <text class="brand-slogan">让每一次计算，都有新收获</text>
     </view>
-    <view class="math-decor" aria-hidden="true">
-      <text class="math-badge number">7</text>
-      <text class="math-badge plus">+</text>
-      <text class="math-badge divide">÷</text>
-    </view>
-    <text class="hero-equation">3 + 5 = 8</text>
+
   </view>
 
-  <view class="card auth-card">
-    <block wx:if="{{user}}">
-      <view class="hello">你好，{{user.username}}！</view>
-      <button class="primary-btn" hover-class="button-hover" bindtap="guestStart">开始答题</button>
-      <view class="center-row"><button class="link-btn" bindtap="logout">退出登录</button></view>
-    </block>
-
-    <block wx:else>
+  <view wx:if="{{!user}}" class="card auth-card">
       <view class="entry-heading">
         <text class="entry-title">{{tab === 'login' ? '欢迎回来' : '创建账号'}}</text>
         <text class="entry-subtitle">{{tab === 'login' ? '登录后继续你的练习之旅' : '保存成绩，和朋友一起挑战排行榜'}}</text>
@@ -68,17 +56,12 @@
       </form>
 
       <view wx:if="{{tab === 'login'}}" class="bottom-links">
-        <button class="link-btn" data-tab="register" bindtap="switchTab">没有账号？去注册</button>
+
         <button class="link-btn" bindtap="goForgot">忘记密码？</button>
       </view>
-      <view wx:else class="bottom-links register-links">
-        <button class="link-btn" data-tab="login" bindtap="switchTab">已有账号？去登录</button>
-      </view>
-    </block>
   </view>
 
   <view wx:if="{{!user}}" class="guest-row">
     <button class="link-btn guest-btn" bindtap="guestStart">访客模式，先试一试</button>
   </view>
-  <view class="entry-footer">适合小学一、二年级 · 每天进步一点点</view>
 </view>

@@ -20,12 +20,12 @@ leaderboardRoutes.get('/', async (c) => {
   }
 
   const rows = await withDb(c.env, async (db) => {
-    const { rows } = await db.query<LeaderboardRow>(
+    const [rows] = await db.execute<LeaderboardRow[]>(
       `WITH session_avg AS (
          SELECT s.id, s.user_id, s.total, s.created_at, AVG(r.time_ms) AS avg_ms
          FROM quiz_sessions s
          JOIN question_records r ON r.session_id = s.id
-         WHERE s.op_type = $1 AND s.correct * 10 >= s.total * 9
+         WHERE s.op_type = ? AND s.correct * 10 >= s.total * 9
          GROUP BY s.id, s.user_id, s.total, s.created_at
        ),
        best AS (
@@ -36,7 +36,7 @@ leaderboardRoutes.get('/', async (c) => {
                 ) AS rn
          FROM session_avg sa
        )
-       SELECT u.username, ROUND(b.avg_ms) AS "avgMs", b.total, b.created_at AS "createdAt"
+       SELECT u.username, ROUND(b.avg_ms) AS \`avgMs\`, b.total, b.created_at AS \`createdAt\`
        FROM best b
        JOIN users u ON u.id = b.user_id
        WHERE b.rn = 1

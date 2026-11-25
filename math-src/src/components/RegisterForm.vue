@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
 import PasswordInput from "@/components/PasswordInput.vue";
 import { useAuthStore } from "@/stores/auth";
 import { ApiError } from "@/api/http";
@@ -9,8 +8,6 @@ import { emailError, passwordError, usernameError } from "@/utils/validate";
 // 切换到登录 tab（由父组件 EntryView 处理）
 const emit = defineEmits<{ switch: [] }>();
 
-const route = useRoute();
-const router = useRouter();
 const auth = useAuthStore();
 
 const form = reactive({ username: "", email: "", password: "", confirm: "" });
@@ -87,12 +84,6 @@ async function submit() {
       form.password,
       form.email.trim().toLowerCase()
     );
-    // 注册即登录，默认进入答题设置页；带 redirect 则回跳
-    const redirect =
-      typeof route.query.redirect === "string"
-        ? route.query.redirect
-        : "/setup";
-    router.push(redirect);
   } catch (e) {
     if (e instanceof ApiError) {
       if (e.code === "USERNAME_TAKEN") {

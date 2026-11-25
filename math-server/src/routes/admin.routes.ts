@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
 import bcrypt from 'bcryptjs'
+import type { ResultSetHeader, RowDataPacket } from 'mysql2'
 import { withDb } from '../db'
 import { getConfig, type AppEnv } from '../env'
 import { httpError } from '../httpError'
@@ -38,11 +39,16 @@ adminRoutes.post('/reset-password', adminLimiter, async (c) => {
   const hash = await bcrypt.hash(newPassword, getConfig(c.env).bcryptRounds)
   // 大小写不敏感定位用户，返回库里真实的大小写形式
   const realUsername = await withDb(c.env, async (db) => {
-    const r = await db.query<{ username: string }>(
-      'UPDATE users SET password_hash = $1 WHERE LOWER(username) = LOWER($2) RETURNING username',
+    const [result] = await db.execute<ResultSetHeader>(
+      'UPDATE users SET password_hash = ? WHERE LOWER(username) = LOWER(?)',
       [hash, username]
     )
-    return r.rows[0]?.username as string | undefined
+    if (result.affectedRows === 0) return undefined
+    const [rows] = await db.execute<(RowDataPacket & { username: string })[]>(
+      'SELECT username FROM users WHERE LOWER(username) = LOWER(?)',
+      [username]
+    )
+    return rows[0]?.username as string | undefined
   })
   if (!realUsername) throw httpError(404, 'USER_NOT_FOUND', '该用户名不存在')
   return c.json({ message: `已将 ${realUsername} 的密码重置为新密码` })
