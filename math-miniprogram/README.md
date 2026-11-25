@@ -36,7 +36,7 @@ const API_BASE = 'https://scoreeverything.com'
 
 ### 开发者工具联调
 
-默认地址沿用 Web 版线上接口。若该域名尚未配置到当前小程序账号，可在开发者工具的“详情 → 本地设置”中勾选“不校验合法域名、web-view（业务域名）、TLS 版本以及 HTTPS 证书”。
+默认地址为 `https://jianxiujiucan.cn/math`。若该域名尚未配置到当前小程序账号，可在开发者工具的“详情 → 本地设置”中勾选“不校验合法域名、web-view（业务域名）、TLS 版本以及 HTTPS 证书”。
 
 连接本机后端时：
 

@@ -1,0 +1,19 @@
+[Unit]
+Description=Math Challenge (Vue + Hono + MySQL)
+After=network.target mysqld.service
+Wants=mysqld.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/math-challenge/math-server
+Environment=NODE_ENV=production
+Environment=PORT=3010
+ExecStart=/usr/local/bin/npm start
+Restart=always
+RestartSec=5
+User=root
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

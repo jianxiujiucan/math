@@ -49,7 +49,7 @@ npm run dev
 | 文件 | 变量 | 当前用途 |
 | --- | --- | --- |
 | `.env.development` | `VITE_API_BASE=http://localhost:3000` | 本地后端 |
-| `.env.production` | `VITE_API_BASE=https://scoreeverything.com` | 线上后端 |
+| `.env.production` | `VITE_API_BASE=https://jianxiujiucan.cn/math` | 线上后端 |
 
 `VITE_API_BASE` 末尾不要带 `/`。留空时表示请求与页面同源。
 
@@ -64,6 +64,14 @@ npm run preview     # 本地预览构建产物
 ```
 
 构建配置中的 `base` 为 `/`，产物输出到 `math-src/dist/`。部署时将 `dist/` 内的文件发布到站点根目录；如果以后需要恢复子路径部署，再同步调整 `vite.config.ts` 中的 `base`。
+
+当前阿里云环境使用 `/math` 子路径，生产构建命令：
+
+```bash
+npm run build -- --base=/math/
+```
+
+线上访问地址为 `https://jianxiujiucan.cn/math/`，接口前缀为 `https://jianxiujiucan.cn/math/api`。
 
 ## 目录结构
 

@@ -42,44 +42,39 @@ function switchTab(t: "login" | "register") {
       <h1>速算挑战</h1>
       <p class="brand-slogan">让每一次计算，都有新收获</p>
     </div>
-    <div class="math-decor" aria-hidden="true">
-      <span class="math-badge number">7</span>
-      <span class="math-badge plus">+</span>
-      <span class="math-badge divide">÷</span>
-    </div>
   </header>
 
   <div v-if="!auth.state.user" class="login">
-      <div class="entry-heading">
-        <h2>{{ tab === "login" ? "欢迎回来" : "创建账号" }}</h2>
-        <p>
-          {{
-            tab === "login"
-              ? "登录后继续你的练习之旅"
-              : "保存成绩，和朋友一起挑战排行榜"
-          }}
-        </p>
-      </div>
-      <div class="auth-tabs">
-        <button
-          type="button"
-          class="auth-tab"
-          :class="{ active: tab === 'login' }"
-          @click="switchTab('login')"
-        >
-          登录
-        </button>
-        <button
-          type="button"
-          class="auth-tab"
-          :class="{ active: tab === 'register' }"
-          @click="switchTab('register')"
-        >
-          注册
-        </button>
-      </div>
-      <LoginForm v-if="tab === 'login'" @switch="switchTab('register')" />
-      <RegisterForm v-else @switch="switchTab('login')" />
+    <div class="entry-heading">
+      <h2>{{ tab === "login" ? "欢迎回来" : "创建账号" }}</h2>
+      <p>
+        {{
+          tab === "login"
+            ? "登录后继续你的练习之旅"
+            : "保存成绩，和朋友一起挑战排行榜"
+        }}
+      </p>
+    </div>
+    <div class="auth-tabs">
+      <button
+        type="button"
+        class="auth-tab"
+        :class="{ active: tab === 'login' }"
+        @click="switchTab('login')"
+      >
+        登录
+      </button>
+      <button
+        type="button"
+        class="auth-tab"
+        :class="{ active: tab === 'register' }"
+        @click="switchTab('register')"
+      >
+        注册
+      </button>
+    </div>
+    <LoginForm v-if="tab === 'login'" @switch="switchTab('register')" />
+    <RegisterForm v-else @switch="switchTab('login')" />
   </div>
 
   <div v-if="!auth.state.user" class="guest-row">
@@ -95,7 +90,7 @@ function switchTab(t: "login" | "register") {
 
 .entry-hero {
   position: relative;
-  min-height: 1.86rem;
+  min-height: 1.586rem;
   padding: 0.34rem 0.04rem 0.2rem;
 }
 

@@ -59,6 +59,8 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: url("../assets/img/bg.png") no-repeat right 0.2rem top 0.1rem /
+    38% auto;
 }
 
 .page.no-tabs {

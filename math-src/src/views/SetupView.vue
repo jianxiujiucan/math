@@ -87,16 +87,11 @@ function start() {
   <header class="setup-hero">
     <div class="setup-brand">
       <h1>速算挑战</h1>
-      <span class="brand-mark" aria-hidden="true">=</span>
     </div>
     <div class="setup-greeting">
       <div>
         <h2>今天也要加油呀！</h2>
         <p>选好规则，开始今天的计算小挑战</p>
-      </div>
-      <div class="setup-symbols" aria-hidden="true">
-        <span>5</span>
-        <span>+</span>
       </div>
     </div>
   </header>

@@ -142,3 +142,21 @@ curl http://127.0.0.1:3000/api/health
 - `carry`、`is_correct` 使用 `TINYINT(1)`，接口返回前转换为布尔值。
 - `DATETIME` 按 UTC 处理，接口序列化为 ISO 时间，前端转换为本地时区。
 - 排行榜使用 MySQL 8 的 CTE 与窗口函数；MySQL 5.7 及更早版本不受支持。
+
+## 八、当前阿里云部署
+
+当前线上地址：`https://jianxiujiucan.cn/math/`。
+
+- 应用目录：`/opt/math-challenge`
+- 后端端口：`3010`
+- 数据库：`math_challenge`
+- 服务：`math-challenge.service`
+- Nginx 配置：`/etc/nginx/snippets/math-challenge.conf`
+
+静态页面由 `/math/` 提供，`/math/api/` 反向代理到 `127.0.0.1:3010/api/`。配置位于独立目录和独立服务中，不影响服务器上的其他项目。
+
+```bash
+systemctl status math-challenge
+journalctl -u math-challenge -n 50 --no-pager
+curl https://jianxiujiucan.cn/math/api/health
+```
