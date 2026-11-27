@@ -8,8 +8,30 @@
       <button class="logout-btn" aria-label="退出登录" bindtap="logout">
         <image class="logout-icon" src="/assets/img/icon/logout.svg" mode="aspectFit" />
       </button>
-      <view class="username">{{profile.user.username}}</view>
-      <view class="user-meta">{{profile.user.email}}</view>
+      <view wx:if="{{!nicknameEditing}}" class="username-row">
+        <text class="username">{{profile.user.username}}</text>
+        <button class="nickname-edit-btn" aria-label="编辑昵称" bindtap="startNicknameEdit">
+          <image class="nickname-edit-icon" src="/assets/img/icon/edit.svg" mode="aspectFit" />
+        </button>
+      </view>
+      <view wx:else class="nickname-edit-form">
+        <input
+          class="nickname-input {{nicknameError ? 'input-error' : ''}}"
+          value="{{nicknameDraft}}"
+          aria-label="昵称"
+          maxlength="20"
+          confirm-type="done"
+          focus="{{nicknameFocus}}"
+          disabled="{{nicknameSaving}}"
+          bindinput="onNicknameInput"
+          bindconfirm="saveNickname"
+        />
+        <button class="nickname-confirm-btn" disabled="{{nicknameSaving}}" bindtap="saveNickname">
+          {{nicknameSaving ? '保存中' : '确定'}}
+        </button>
+      </view>
+      <view wx:if="{{nicknameEditing && nicknameError}}" class="nickname-error">{{nicknameError}}</view>
+      <view class="user-meta">{{profile.user.email || '微信登录账号'}}</view>
       <view class="user-meta">注册于 {{profile.createdAtText}}</view>
     </view>
 

@@ -158,6 +158,57 @@
 
 }
 
+.wechat-login-btn {
+  width: 100%;
+  min-height: 88rpx;
+  padding: 0 28rpx;
+  border-radius: 44rpx;
+  background: #9bcf9d;
+  box-shadow: 0 8rpx 16rpx rgba(7, 193, 96, 0.2);
+  color: #ffffff;
+  font-size: 30rpx;
+  font-weight: 700;
+  line-height: 88rpx;
+}
+
+.wechat-login-btn.button-hover {
+  opacity: 0.88;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin: 30rpx 0;
+  color: #8c9aa7;
+  font-size: 23rpx;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  flex: 1;
+  height: 1rpx;
+  background: #d8e7ef;
+  content: '';
+}
+
+.nickname-rule {
+  display: block;
+  margin: 10rpx 18rpx 0;
+  color: #8c9aa7;
+  font-size: 22rpx;
+  line-height: 1.5;
+}
+
+button.primary-btn.nickname-submit {
+  margin-top: 24rpx;
+}
+
+.nickname-cancel {
+  margin-top: 26rpx;
+  text-align: center;
+}
+
 button.primary-btn {
   width: 590rpx;
   margin-top: 60rpx;

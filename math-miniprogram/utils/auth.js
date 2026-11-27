@@ -29,9 +29,19 @@ function clearAuth() {
   }
 }
 
+function updateStoredUsername(username) {
+  const user = getStoredUser()
+  if (!user) return
+  const updatedUser = { ...user, username }
+  wx.setStorageSync(USER_KEY, updatedUser)
+  const app = getApp()
+  if (app) app.globalData.user = updatedUser
+}
+
 module.exports = {
   clearAuth,
   getStoredUser,
   getToken,
   saveAuth,
+  updateStoredUsername,
 }

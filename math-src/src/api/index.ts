@@ -60,6 +60,14 @@ export function fetchProfileApi() {
   return api<ProfileResponse>('/api/profile', { auth: true })
 }
 
+export function updateNicknameApi(nickname: string) {
+  return api<{ user: { username: string } }>('/api/profile/nickname', {
+    method: 'POST',
+    body: { nickname: normalizeUsername(nickname) },
+    auth: true,
+  })
+}
+
 export function fetchSessionsApi(page: number, pageSize = 10) {
   return api<SessionListResponse>(`/api/profile/sessions?page=${page}&pageSize=${pageSize}`, {
     auth: true,

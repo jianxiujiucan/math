@@ -24,11 +24,86 @@ button.logout-btn {
   height: 48rpx;
 }
 
+.username-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  min-height: 72rpx;
+}
+
 .username {
   margin-bottom: 8rpx;
   color: #333333;
   font-size: 34rpx;
   font-weight: 700;
+  word-break: break-all;
+}
+
+button.nickname-edit-btn {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 56rpx;
+  height: 56rpx;
+  margin: 0 0 8rpx;
+  padding: 0;
+  background: transparent;
+  line-height: 1;
+}
+
+button.nickname-edit-btn.button-hover {
+  background: #e8f5fb;
+}
+
+.nickname-edit-icon {
+  width: 28rpx;
+  height: 28rpx;
+}
+
+.nickname-edit-form {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  min-height: 72rpx;
+  margin-bottom: 8rpx;
+}
+
+.nickname-input {
+  width: 360rpx;
+  max-width: 55vw;
+  height: 64rpx;
+  padding: 0 20rpx;
+  border: 2rpx solid #d8e7ef;
+  border-radius: 32rpx;
+  background: #ffffff;
+  color: #33475b;
+  font-size: 28rpx;
+}
+
+.nickname-input.input-error {
+  border-color: #e74c3c;
+}
+
+button.nickname-confirm-btn {
+  flex: none;
+  width: 120rpx;
+  height: 64rpx;
+  margin: 0;
+  padding: 0 24rpx;
+  border-radius: 32rpx;
+  background: #62aae7;
+  color: #ffffff;
+  font-size: 24rpx;
+  line-height: 64rpx;
+}
+
+.nickname-error {
+  margin: -2rpx auto 8rpx;
+  color: #e74c3c;
+  font-size: 22rpx;
+  line-height: 1.5;
+
 }
 
 .user-meta {

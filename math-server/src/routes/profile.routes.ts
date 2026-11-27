@@ -1,9 +1,12 @@
 import { Hono } from 'hono'
 import { withDb } from '../db'
 import { requireAuth } from '../auth'
+import { bodyOf } from '../body'
 import { httpError } from '../httpError'
+import { isValidUsername, normalizeUsername } from '../validate'
 import type { AppEnv } from '../env'
 import type { CountRow, PerTypeRow, QuestionRow, SessionRow, TotalsRow, UserPublicRow } from '../types'
+import { publicEmail } from '../wechat'
 
 export const profileRoutes = new Hono<AppEnv>()
 
@@ -18,8 +21,9 @@ profileRoutes.get('/', async (c) => {
       'SELECT username, email, created_at AS `createdAt` FROM users WHERE id = ?',
       [uid]
     )
-    const user = users[0]
-    if (!user) throw httpError(401, 'UNAUTHORIZED', '账号不存在，请重新登录')
+    const row = users[0]
+    if (!row) throw httpError(401, 'UNAUTHORIZED', '账号不存在，请重新登录')
+    const user = { ...row, email: publicEmail(row.email) }
 
     const [totals] = await db.execute<TotalsRow[]>(
       `SELECT COUNT(*) AS \`totalSessions\`,
@@ -65,6 +69,29 @@ profileRoutes.get('/', async (c) => {
         })),
       },
     })
+  })
+})
+
+/* ---------- 修改昵称 ---------- */
+profileRoutes.post('/nickname', async (c) => {
+  const uid = c.get('user').uid
+  const body = await bodyOf(c)
+  const nickname = normalizeUsername(String(body.nickname ?? '').trim())
+  if (!isValidUsername(nickname)) {
+    throw httpError(400, 'INVALID_USERNAME', '昵称需为 2~20 位文字或数字，不能包含空格或特殊符号')
+  }
+
+  return withDb(c.env, async (db) => {
+    try {
+      await db.execute('UPDATE users SET username = ? WHERE id = ?', [nickname, uid])
+      return c.json({ user: { username: nickname } })
+    } catch (error) {
+      const err = error as { code?: string; errno?: number }
+      if (err.code === 'ER_DUP_ENTRY' || err.errno === 1062) {
+        throw httpError(409, 'USERNAME_TAKEN', '该昵称已被使用，请换一个')
+      }
+      throw error
+    }
   })
 })
 

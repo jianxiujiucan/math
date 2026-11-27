@@ -1,0 +1,116 @@
+name: Build and deploy production
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: math-production
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            math-src/package-lock.json
+            math-server/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: math-src
+        run: npm ci
+
+      - name: Test frontend
+        working-directory: math-src
+        run: npm test
+
+      - name: Type-check frontend
+        working-directory: math-src
+        run: npm run type-check
+
+      - name: Build frontend
+        working-directory: math-src
+        run: npm run build
+
+      - name: Install backend dependencies
+        working-directory: math-server
+        run: npm ci
+
+      - name: Test backend
+        working-directory: math-server
+        run: npm test
+
+      - name: Type-check backend
+        working-directory: math-server
+        run: npm run type-check
+
+      - name: Package production files
+        run: |
+          tar -czf "math-challenge-${GITHUB_SHA}.tar.gz" \
+            math-src/dist \
+            math-server/src \
+            math-server/package.json \
+            math-server/package-lock.json \
+            math-server/tsconfig.json
+
+      - name: Configure deployment SSH key
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          install -m 700 -d "${HOME}/.ssh"
+          printf '%s\n' "${DEPLOY_SSH_KEY}" | tr -d '\r' > "${HOME}/.ssh/id_ed25519"
+          chmod 600 "${HOME}/.ssh/id_ed25519"
+
+      - name: Trust production SSH host
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+        run: |
+          ssh-keyscan -p "${DEPLOY_PORT:-22}" "${DEPLOY_HOST}" > "${HOME}/.ssh/known_hosts"
+          chmod 600 "${HOME}/.ssh/known_hosts"
+
+      - name: Upload production package
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          scp -P "${DEPLOY_PORT:-22}" \
+            "math-challenge-${GITHUB_SHA}.tar.gz" \
+            "deploy/production.sh" \
+            "${DEPLOY_USER}@${DEPLOY_HOST}:/tmp/"
+
+      - name: Deploy and verify production
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          ssh -p "${DEPLOY_PORT:-22}" "${DEPLOY_USER}@${DEPLOY_HOST}" \
+            "bash '/tmp/production.sh' '${GITHUB_SHA}' '/tmp/math-challenge-${GITHUB_SHA}.tar.gz'"
+
+      - name: Remove remote deployment package
+        if: always()
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          ssh -p "${DEPLOY_PORT:-22}" "${DEPLOY_USER}@${DEPLOY_HOST}" \
+            "rm -f -- '/tmp/production.sh' '/tmp/math-challenge-${GITHUB_SHA}.tar.gz'"

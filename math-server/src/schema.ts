@@ -15,6 +15,21 @@ export const schemaStatements: string[] = [
     CONSTRAINT uk_users_email UNIQUE (email)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
 
+  // 微信身份单独关联用户，避免把 openid 暴露到排行榜等公共查询。
+  // session_key 是敏感临时凭证，本表不保存。
+  `CREATE TABLE IF NOT EXISTS wechat_accounts (
+    user_id     INT UNSIGNED NOT NULL,
+    openid      VARCHAR(128) NOT NULL,
+    unionid     VARCHAR(128) NULL,
+    nickname_required TINYINT(1) NOT NULL DEFAULT 1,
+    created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id),
+    CONSTRAINT uk_wechat_accounts_openid UNIQUE (openid),
+    INDEX idx_wechat_accounts_unionid (unionid),
+    CONSTRAINT fk_wechat_accounts_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
+
   `CREATE TABLE IF NOT EXISTS quiz_sessions (
     id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
     user_id     INT UNSIGNED NOT NULL,
@@ -59,4 +74,10 @@ export const schemaStatements: string[] = [
     PRIMARY KEY (id),
     INDEX idx_password_resets_email_created (email, created_at)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
+]
+
+/** 已存在数据库的增量迁移；ER_DUP_FIELDNAME 表示该列已由新 DDL 或其他实例添加。 */
+export const schemaMigrationStatements: string[] = [
+  `ALTER TABLE wechat_accounts
+   ADD COLUMN nickname_required TINYINT(1) NOT NULL DEFAULT 1 AFTER unionid`,
 ]

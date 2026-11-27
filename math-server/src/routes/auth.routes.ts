@@ -2,13 +2,15 @@ import { Hono } from 'hono'
 import bcrypt from 'bcryptjs'
 import type { ResultSetHeader, RowDataPacket } from 'mysql2'
 import { withDb } from '../db'
-import { requireAuth, signToken } from '../auth'
+import { requireAuth, signToken, verifyToken } from '../auth'
 import { getConfig, type AppEnv } from '../env'
 import { httpError } from '../httpError'
 import { bodyOf } from '../body'
 import { rateLimit } from '../rateLimit'
 import { generateRecoveryCode, hashRecoveryCode, recoveryCodesMatch } from '../recovery'
 import { sendPasswordResetCode } from '../mail'
+import { exchangeWechatCode, publicEmail } from '../wechat'
+import { completeWechatNickname, findOrCreateWechatAccount } from '../wechatAccount'
 import { isValidEmail, isValidPassword, isValidUsername, normalizeUsername } from '../validate'
 import type { ResetRow, UserAuthRow, UserPublicRow } from '../types'
 
@@ -97,6 +99,67 @@ authRoutes.post('/login', async (c) => {
   return c.json({ token, user: { id: row.id, username: row.username, email: row.email } })
 })
 
+/* ---------- 微信小程序 wx.login ---------- */
+authRoutes.post('/wechat-login', async (c) => {
+  const body = await bodyOf(c)
+  const code = String(body.code ?? '').trim()
+  if (!code || code.length > 128) {
+    throw httpError(400, 'WECHAT_CODE_REQUIRED', '微信登录凭证缺失，请重新点击登录')
+  }
+
+  const identity = await exchangeWechatCode(c.env, code)
+  const cfg = getConfig(c.env)
+  const user = await findOrCreateWechatAccount(c.env, identity, cfg.bcryptRounds)
+  // 新小程序显式请求昵称流程；旧小程序不传 flow，部署过渡期间仍可正常登录。
+  if (body.flow === 'nickname-v1' && user.requiresNickname) {
+    const setupToken = await signToken(
+      { uid: user.id, username: user.username, purpose: 'wechat-nickname' },
+      cfg.jwtSecret,
+      '10m'
+    )
+    return c.json({ requiresNickname: true, setupToken })
+  }
+
+  const token = await signToken(
+    { uid: user.id, username: user.username },
+    cfg.jwtSecret,
+    cfg.jwtExpiresIn
+  )
+  return c.json({
+    requiresNickname: false,
+    token,
+    user: { id: user.id, username: user.username, email: publicEmail(user.email) },
+  })
+})
+
+/* ---------- 首次微信登录：设置昵称后才签发正式 token ---------- */
+authRoutes.post('/wechat-nickname', async (c) => {
+  const cfg = getConfig(c.env)
+  const header = c.req.header('authorization') ?? ''
+  const setupToken = header.startsWith('Bearer ') ? header.slice(7) : ''
+  const setup = setupToken ? await verifyToken(setupToken, cfg.jwtSecret) : null
+  if (!setup || setup.purpose !== 'wechat-nickname') {
+    throw httpError(401, 'WECHAT_SETUP_TOKEN_INVALID', '昵称设置凭证无效或已过期，请重新微信登录')
+  }
+
+  const body = await bodyOf(c)
+  const nickname = normalizeUsername(String(body.nickname ?? '').trim())
+  if (!isValidUsername(nickname)) {
+    throw httpError(400, 'INVALID_USERNAME', '昵称需为 2~20 位文字或数字，不能包含空格或特殊符号')
+  }
+
+  const user = await completeWechatNickname(c.env, setup.uid, nickname)
+  const token = await signToken(
+    { uid: user.id, username: user.username },
+    cfg.jwtSecret,
+    cfg.jwtExpiresIn
+  )
+  return c.json({
+    token,
+    user: { id: user.id, username: user.username, email: publicEmail(user.email) },
+  })
+})
+
 /* ---------- 当前用户 ---------- */
 authRoutes.get('/me', requireAuth, async (c) => {
   const row = await withDb(c.env, async (db) => {
@@ -104,7 +167,8 @@ authRoutes.get('/me', requireAuth, async (c) => {
       'SELECT id, username, email, created_at AS `createdAt` FROM users WHERE id = ?',
       [c.get('user').uid]
     )
-    return rows[0]
+    const row = rows[0]
+    return row ? { ...row, email: publicEmail(row.email) } : row
   })
   if (!row) throw httpError(401, 'UNAUTHORIZED', '账号不存在，请重新登录')
   return c.json({ user: row })

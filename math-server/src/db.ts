@@ -1,5 +1,5 @@
 import mysql, { type Connection } from 'mysql2/promise'
-import { schemaStatements } from './schema'
+import { schemaMigrationStatements, schemaStatements } from './schema'
 import type { Bindings } from './env'
 
 let ready: Promise<void> | null = null
@@ -34,6 +34,14 @@ export function ensureDb(env: Bindings): Promise<void> {
   ready ??= withDb(env, async (db) => {
     for (const ddl of schemaStatements) {
       await db.query(ddl)
+    }
+    for (const migration of schemaMigrationStatements) {
+      try {
+        await db.query(migration)
+      } catch (error) {
+        const err = error as { code?: string; errno?: number }
+        if (err.code !== 'ER_DUP_FIELDNAME' && err.errno !== 1060) throw error
+      }
     }
     console.log('[db] tables ready')
   })

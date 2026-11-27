@@ -16,6 +16,10 @@ export interface Bindings {
   SMTP_USER?: string
   SMTP_PASS?: string
   MAIL_FROM?: string
+  /** 微信小程序 AppID（仅后端用于 code2session） */
+  WECHAT_MINIPROGRAM_APPID?: string
+  /** 微信小程序 AppSecret（仅后端保存，绝不能下发到小程序） */
+  WECHAT_MINIPROGRAM_APPSECRET?: string
   /** 管理口令（重置用户密码接口 /api/admin/* 用；不配置则管理接口关闭） */
   ADMIN_TOKEN?: string
 }

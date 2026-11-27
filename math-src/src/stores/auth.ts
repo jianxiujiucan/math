@@ -39,5 +39,11 @@ export function useAuthStore() {
     clearAuth() // 经订阅同步 state
   }
 
-  return { state, login, register, logout }
+  function updateUsername(username: string): void {
+    if (!state.user) return
+    state.user = { ...state.user, username }
+    if (state.token) saveAuth(state.token, state.user)
+  }
+
+  return { state, login, register, logout, updateUsername }
 }

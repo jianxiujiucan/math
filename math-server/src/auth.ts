@@ -6,6 +6,8 @@ import { httpError } from './httpError'
 export interface AuthPayload {
   uid: number
   username: string
+  /** 仅微信首次登录的昵称设置凭证使用；正式登录凭证不包含此字段。 */
+  purpose?: 'wechat-nickname'
 }
 
 const enc = new TextEncoder()
@@ -33,7 +35,7 @@ export async function requireAuth(c: AppContext, next: Next): Promise<void> {
   const token = header.startsWith('Bearer ') ? header.slice(7) : ''
   if (!token) throw httpError(401, 'UNAUTHORIZED', '请先登录')
   const payload = await verifyToken(token, getConfig(c.env).jwtSecret)
-  if (!payload) throw httpError(401, 'UNAUTHORIZED', '登录已过期，请重新登录')
+  if (!payload || payload.purpose) throw httpError(401, 'UNAUTHORIZED', '登录已过期，请重新登录')
   c.set('user', payload)
   await next()
 }

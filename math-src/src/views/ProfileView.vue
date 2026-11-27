@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, nextTick, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
+import editIcon from "@/assets/img/icon/edit.svg";
 import logoutIcon from "@/assets/img/icon/logout.svg";
-import { fetchProfileApi, fetchSessionsApi } from "@/api";
+import { fetchProfileApi, fetchSessionsApi, updateNicknameApi } from "@/api";
 import { ApiError } from "@/api/http";
 import type { PerTypeStat, ProfileResponse, SessionSummary } from "@/types/api";
 import type { OpType } from "@/types/quiz";
@@ -14,6 +15,7 @@ import {
   formatMsPerQ,
   opTypeLabel,
 } from "@/utils/format";
+import { usernameError } from "@/utils/validate";
 
 const router = useRouter();
 const auth = useAuthStore();
@@ -25,6 +27,11 @@ const page = ref(1);
 const pageSize = 10;
 const loading = ref(true);
 const errorMsg = ref("");
+const nicknameInput = ref<HTMLInputElement | null>(null);
+const nicknameEditing = ref(false);
+const nicknameDraft = ref("");
+const nicknameSaving = ref(false);
+const nicknameError = ref("");
 
 const totalPages = computed(() =>
   Math.max(1, Math.ceil(total.value / pageSize))
@@ -81,6 +88,50 @@ function configText(s: SessionSummary): string {
   return `${opTypeLabel(s.opType)} · ${s.range}以内 · ${s.count}题`;
 }
 
+async function startNicknameEdit() {
+  if (!profile.value || nicknameSaving.value) return;
+  nicknameDraft.value = profile.value.user.username;
+  nicknameError.value = "";
+  nicknameEditing.value = true;
+  await nextTick();
+  nicknameInput.value?.focus();
+  nicknameInput.value?.select();
+}
+
+function cancelNicknameEdit() {
+  if (nicknameSaving.value) return;
+  nicknameEditing.value = false;
+  nicknameError.value = "";
+}
+
+async function saveNickname() {
+  if (!profile.value || nicknameSaving.value) return;
+  const nickname = nicknameDraft.value.trim();
+  const validationError = usernameError(nickname).replace(/用户名/g, "昵称");
+  if (validationError) {
+    nicknameError.value = validationError;
+    return;
+  }
+  if (nickname === profile.value.user.username) {
+    cancelNicknameEdit();
+    return;
+  }
+
+  nicknameSaving.value = true;
+  nicknameError.value = "";
+  try {
+    const result = await updateNicknameApi(nickname);
+    profile.value.user.username = result.user.username;
+    auth.updateUsername(result.user.username);
+    nicknameEditing.value = false;
+  } catch (e) {
+    nicknameError.value =
+      e instanceof ApiError ? e.message : "昵称保存失败，请稍后再试";
+  } finally {
+    nicknameSaving.value = false;
+  }
+}
+
 function logout() {
   auth.logout();
   router.push("/");
@@ -107,7 +158,44 @@ onMounted(load);
       >
         <img :src="logoutIcon" alt="" />
       </button>
-      <div class="username">{{ profile.user.username }}</div>
+      <div v-if="!nicknameEditing" class="username-row">
+        <div class="username">{{ profile.user.username }}</div>
+        <button
+          type="button"
+          class="nickname-edit-btn"
+          aria-label="编辑昵称"
+          title="编辑昵称"
+          @click="startNicknameEdit"
+        >
+          <img :src="editIcon" alt="" />
+        </button>
+      </div>
+      <div v-else class="nickname-edit-form">
+        <input
+          ref="nicknameInput"
+          v-model="nicknameDraft"
+          class="nickname-input"
+          :class="{ 'input-error': nicknameError }"
+          type="text"
+          aria-label="昵称"
+          maxlength="20"
+          autocomplete="off"
+          :disabled="nicknameSaving"
+          @keyup.enter="saveNickname"
+          @keyup.esc="cancelNicknameEdit"
+        />
+        <button
+          type="button"
+          class="nickname-confirm-btn"
+          :disabled="nicknameSaving"
+          @click="saveNickname"
+        >
+          {{ nicknameSaving ? "保存中" : "确定" }}
+        </button>
+      </div>
+      <p v-if="nicknameEditing && nicknameError" class="nickname-error">
+        {{ nicknameError }}
+      </p>
       <div class="user-meta">{{ profile.user.email }}</div>
       <div class="user-meta">
         注册于 {{ formatDate(profile.user.createdAt) }}
@@ -248,10 +336,97 @@ onMounted(load);
   }
 }
 
+.username-row {
+  display: flex;
+  align-items: center;
+  gap: 0.04rem;
+  min-height: 0.36rem;
+}
+
 .username {
   font-size: 0.24rem;
   font-weight: 800;
   color: $text-main;
+  overflow-wrap: anywhere;
+}
+
+.nickname-edit-btn {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 0.32rem;
+  height: 0.32rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+
+  &:hover {
+    background: $primary-light;
+  }
+
+  img {
+    display: block;
+    width: 0.16rem;
+    height: 0.16rem;
+  }
+}
+
+.nickname-edit-form {
+  display: flex;
+  align-items: center;
+  gap: 0.08rem;
+  min-height: 0.36rem;
+}
+
+.nickname-input {
+  width: min(2.2rem, 55vw);
+  height: 0.36rem;
+  padding: 0 0.12rem;
+  border: 0.01rem solid #d8e7ef;
+  border-radius: 0.18rem;
+  outline: none;
+  background: #fff;
+  color: $text-main;
+  font-family: inherit;
+  font-size: 0.16rem;
+
+  &:focus {
+    border-color: $primary;
+  }
+
+  &.input-error {
+    border-color: $danger;
+  }
+}
+
+.nickname-confirm-btn {
+  flex: none;
+  min-width: 0.62rem;
+  height: 0.36rem;
+  padding: 0 0.14rem;
+  border: none;
+  border-radius: 0.18rem;
+  background: $primary;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.13rem;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: wait;
+    opacity: 0.6;
+  }
+}
+
+.nickname-error {
+  max-width: 3.2rem;
+  margin: 0.06rem auto 0;
+  color: $danger;
+  font-size: 0.12rem;
+  line-height: 1.4;
 }
 
 .user-meta {

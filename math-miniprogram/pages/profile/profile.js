@@ -1,6 +1,7 @@
-const { fetchProfileApi, fetchSessionsApi } = require('../../utils/api')
-const { clearAuth, getToken } = require('../../utils/auth')
+const { fetchProfileApi, fetchSessionsApi, updateNicknameApi } = require('../../utils/api')
+const { clearAuth, getToken, updateStoredUsername } = require('../../utils/auth')
 const { formatDate, formatDateTime, formatDuration, formatMsPerQ, opTypeLabel } = require('../../utils/format')
+const { usernameError } = require('../../utils/validate')
 
 const ALL_TYPES = ['add', 'sub', 'addsub', 'mul', 'div', 'muldiv']
 const PAGE_SIZE = 10
@@ -15,6 +16,11 @@ Page({
     totalPages: 1,
     loading: true,
     errorMsg: '',
+    nicknameEditing: false,
+    nicknameDraft: '',
+    nicknameSaving: false,
+    nicknameError: '',
+    nicknameFocus: false,
   },
 
   onShow() {
@@ -89,6 +95,54 @@ Page({
 
   openSession(event) {
     wx.navigateTo({ url: `/pages/session-detail/session-detail?id=${event.currentTarget.dataset.id}` })
+  },
+
+  startNicknameEdit() {
+    if (!this.data.profile || this.data.nicknameSaving) return
+    this.setData({
+      nicknameEditing: true,
+      nicknameDraft: this.data.profile.user.username,
+      nicknameError: '',
+      nicknameFocus: true,
+    })
+  },
+
+  onNicknameInput(event) {
+    this.setData({ nicknameDraft: event.detail.value, nicknameError: '' })
+  },
+
+  async saveNickname() {
+    if (!this.data.profile || this.data.nicknameSaving) return
+    const nickname = this.data.nicknameDraft.trim()
+    const validationError = usernameError(nickname).replace(/用户名/g, '昵称')
+    if (validationError) {
+      this.setData({ nicknameError: validationError, nicknameFocus: true })
+      return
+    }
+    if (nickname === this.data.profile.user.username) {
+      this.setData({ nicknameEditing: false, nicknameError: '', nicknameFocus: false })
+      return
+    }
+
+    this.setData({ nicknameSaving: true, nicknameError: '' })
+    try {
+      const result = await updateNicknameApi(nickname)
+      const profile = {
+        ...this.data.profile,
+        user: { ...this.data.profile.user, username: result.user.username },
+      }
+      updateStoredUsername(result.user.username)
+      this.setData({
+        profile,
+        nicknameEditing: false,
+        nicknameFocus: false,
+      })
+      wx.showToast({ title: '昵称已更新', icon: 'success' })
+    } catch (error) {
+      this.setData({ nicknameError: error.message || '昵称保存失败，请稍后再试' })
+    } finally {
+      this.setData({ nicknameSaving: false })
+    }
   },
 
   goSetup() {

@@ -74,6 +74,21 @@ function registerApi(username, password, email) {
   })
 }
 
+function wechatLoginApi(code) {
+  return request('/api/auth/wechat-login', {
+    method: 'POST',
+    body: { code, flow: 'nickname-v1' },
+  })
+}
+
+function completeWechatNicknameApi(setupToken, nickname) {
+  return request('/api/auth/wechat-nickname', {
+    method: 'POST',
+    body: { nickname: normalizeUsername(nickname) },
+    header: { Authorization: `Bearer ${setupToken}` },
+  })
+}
+
 function forgotPasswordApi(email) {
   return request('/api/auth/forgot-password', {
     method: 'POST',
@@ -104,6 +119,14 @@ function fetchProfileApi() {
   return request('/api/profile', { auth: true })
 }
 
+function updateNicknameApi(nickname) {
+  return request('/api/profile/nickname', {
+    method: 'POST',
+    body: { nickname: normalizeUsername(nickname) },
+    auth: true,
+  })
+}
+
 function fetchSessionsApi(page, pageSize = 10) {
   return request(`/api/profile/sessions?page=${page}&pageSize=${pageSize}`, { auth: true })
 }
@@ -119,6 +142,7 @@ function fetchLeaderboardApi(opType) {
 module.exports = {
   ApiError,
   adminResetPasswordApi,
+  completeWechatNicknameApi,
   fetchLeaderboardApi,
   fetchProfileApi,
   fetchSessionDetailApi,
@@ -128,4 +152,6 @@ module.exports = {
   registerApi,
   resetPasswordApi,
   saveSessionApi,
+  updateNicknameApi,
+  wechatLoginApi,
 }
