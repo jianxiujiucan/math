@@ -64,6 +64,10 @@ git push origin master
 
 然后在 GitHub 仓库的 **Actions** 页面查看部署。任何一个测试、类型检查或构建步骤失败，都不会修改线上版本。
 
+工作流会先检查必需的 Secrets。若提示 `Missing required GitHub Actions secrets`，
+进入 **Settings → Secrets and variables → Actions**，按上表补齐名称完全一致的配置后重新运行。
+`DEPLOY_SSH_KEY` 必须是部署私钥本身，不是 `.pub` 公钥，也不是私钥文件路径。
+
 ## 发布与回滚保护
 
 服务器先在暂存目录安装生产依赖，再替换程序目录并重启 `math-challenge.service`。本地 API 和公网 HTTPS 健康检查都通过才算发布成功。

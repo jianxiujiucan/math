@@ -23,6 +23,35 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Validate deployment configuration
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          missing=()
+          for variable_name in DEPLOY_HOST DEPLOY_USER DEPLOY_SSH_KEY; do
+            if [[ -z "${!variable_name:-}" ]]; then
+              missing+=("${variable_name}")
+            fi
+          done
+          if (( ${#missing[@]} > 0 )); then
+            printf 'Missing required GitHub Actions secrets: %s\n' "${missing[*]}" >&2
+            echo 'Add them under Settings > Secrets and variables > Actions.' >&2
+            exit 1
+          fi
+
+          port="${DEPLOY_PORT:-22}"
+          if [[ ! "${port}" =~ ^[0-9]+$ ]]; then
+            echo 'DEPLOY_PORT must be a number between 1 and 65535.' >&2
+            exit 1
+          fi
+          if (( 10#${port} < 1 || 10#${port} > 65535 )); then
+            echo 'DEPLOY_PORT must be a number between 1 and 65535.' >&2
+            exit 1
+          fi
+
       - name: Set up Node.js 22
         uses: actions/setup-node@v4
         with:
@@ -76,16 +105,29 @@ jobs:
           install -m 700 -d "${HOME}/.ssh"
           printf '%s\n' "${DEPLOY_SSH_KEY}" | tr -d '\r' > "${HOME}/.ssh/id_ed25519"
           chmod 600 "${HOME}/.ssh/id_ed25519"
+          if ! ssh-keygen -y -f "${HOME}/.ssh/id_ed25519" >/dev/null; then
+            echo 'DEPLOY_SSH_KEY is not a valid OpenSSH private key.' >&2
+            exit 1
+          fi
 
       - name: Trust production SSH host
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
         run: |
-          ssh-keyscan -p "${DEPLOY_PORT:-22}" "${DEPLOY_HOST}" > "${HOME}/.ssh/known_hosts"
+          if ! ssh-keyscan -T 15 -p "${DEPLOY_PORT:-22}" "${DEPLOY_HOST}" > "${HOME}/.ssh/known_hosts"; then
+            echo "Could not retrieve the SSH host key from ${DEPLOY_HOST}:${DEPLOY_PORT:-22}." >&2
+            echo 'Check DEPLOY_HOST, DEPLOY_PORT, and whether the server allows SSH from GitHub Actions.' >&2
+            exit 1
+          fi
+          if ! grep -q 'ssh-' "${HOME}/.ssh/known_hosts"; then
+            echo 'The server returned no SSH host key.' >&2
+            exit 1
+          fi
           chmod 600 "${HOME}/.ssh/known_hosts"
 
       - name: Upload production package
+        id: upload
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
@@ -106,7 +148,8 @@ jobs:
             "bash '/tmp/production.sh' '${GITHUB_SHA}' '/tmp/math-challenge-${GITHUB_SHA}.tar.gz'"
 
       - name: Remove remote deployment package
-        if: always()
+        if: always() && steps.upload.outcome != 'skipped'
+        continue-on-error: true
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
